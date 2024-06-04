@@ -1,0 +1,125 @@
+﻿<ArcGIS defaultAssembly="ArcProViewer.dll" defaultNamespace="ArcProViewer" xmlns="http://schemas.esri.com/DADF/Registry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.esri.com/DADF/Registry file:///C:/Program%20Files/ArcGIS/Pro/bin/ArcGIS.Desktop.Framework.xsd">
+  <AddInInfo id="{62c2dba2-edf8-4538-ab58-3a1f3934f0b3}" version="1.0" desktopVersion="3.3.52636" product="ArcGISPro">
+	<Name>Riverscapes ArcPro Viewer</Name>
+	<Description>
+	  Riverscapes Viewers make it easy to explore riverscape projects as maps.
+	  Developed by the Riverscapes Consoritum, these tools are available as both a web application
+	  and desktop GIS plugins for QGIS and Esri's ArcGIS and ArcPro. They simplify the process of adding
+	  riverscape-related data to your preferred GIS platform, ensuring meaningful layer organization and symbology.
+	  We offer four versions of the Riverscapes Viewer to meet your specific needs.
+	</Description>
+	<Image>Images\viewer32.png</Image>
+	<Author>Philip Bailey</Author>
+	<Company>North Arrow Research Ltd.</Company>
+	<Date>6/3/2024 9:57:48 AM</Date>
+	<Subject>Framework</Subject>
+	<!-- Note subject can be one or more of these topics:
+                    Content, Framework, Editing, Geodatabase, Geometry, Geoprocessing, Layouts, Map Authoring, Map Exploration -->
+  </AddInInfo>
+  <modules>
+	<insertModule id="ArcProViewer_Module" className="Module1" autoLoad="false" caption="Riverscapes Viewer">
+	  <!-- uncomment to have the control hosted on a separate tab-->
+	  <tabs>
+		<!--<tab id="ArcProViewer_Tab1" caption="New Tab">
+          <group refID="ArcProViewer_Group1"/>
+        </tab>-->
+	  </tabs>
+	  <groups>
+		<!-- comment this out if you have no controls on the Addin tab to avoid
+              an empty group-->
+		<group id="ArcProViewer_Group1" caption="Riverscapes Viewer" appearsOnAddInTab="true">
+		  <!-- host controls within groups -->
+		  <button refID="RiverscapesViewer_Buttons_ProjectExplorerDockpane" size="large" />
+		  <button refID="RiverscapesViewer_Buttons_OpenProject" size="large" />
+		  <button refID="RiverscapesViewer_Buttons_CloseProject" size="large" />
+		  <button refID="RiverscapesViewer_Buttons_Help" size="small" />
+		  <button refID="RiverscapesViewer_Buttons_UpdateResources" size="small" />
+		  <button refID="RiverscapesViewer_Buttons_FindResourcesFolder" size="small" />
+		  <button refID="RiverscapesViewer_Buttons_About" size="small" />
+		</group>
+	  </groups>
+	  <controls>
+		<!-- add your controls here -->
+		<button id="RiverscapesViewer_Buttons_OpenProject"
+				loadOnClick="true"
+				className="ArcProViewer.Buttons.OpenProjectButton"
+				caption="Open Project"
+				smallImage="Images/open32.png"
+				largeImage="Images/open32.png">
+		  <tooltip heading="Open Project">
+			Open Riverscapes project and load it into the Project Explorer to view its contents.
+			<disabledText />
+		  </tooltip>
+		</button>
+		<button id="RiverscapesViewer_Buttons_CloseProject"
+				caption="Close all Projects"
+				className="ArcProViewer.Buttons.CloseProjectButton"
+				loadOnClick="true"
+				smallImage="Images/close32"
+				largeImage="Images/close32.png">
+		  <tooltip heading="Close Project">
+			Close all open projects<disabledText />
+		  </tooltip>
+		</button>
+		<button id="RiverscapesViewer_Buttons_ProjectExplorerDockpane"
+				caption="Project Explorer" className="ProjectExplorerDockpane_ShowButton"
+				loadOnClick="true" smallImage="Images/viewer16.png"
+				largeImage="Images/viewer32.png">
+		  <tooltip heading="Show Dockpane">
+			Show Riverscapes Viewer Project Explorer Dockpane<disabledText />
+		  </tooltip>
+		</button>
+		<button id="RiverscapesViewer_Buttons_Help"
+				caption="Help"
+				className="ArcProViewer.Buttons.HelpButton"
+				loadOnClick="true"
+				smallImage="Images/help16.png"
+				largeImage="Images/help32.png">
+		  <tooltip heading="Tooltip Heading">
+			Launch the Riverscapes Viewer Online Help<disabledText />
+		  </tooltip>
+		</button>
+		<button id="RiverscapesViewer_Buttons_UpdateResources"
+				caption="Update Resources"
+				className="ArcProViewer.Buttons.UpdateResourcesButton"
+				loadOnClick="true"
+				smallImage="refresh16.png"
+				largeImage="refresh32.png">
+		  <tooltip heading="Tooltip Heading">
+			Update the business logic and symbology resource files that are needed to display Riverscapes projects.<disabledText />
+		  </tooltip>
+		</button>
+		<button id="RiverscapesViewer_Buttons_FindResourcesFolder"
+				caption="Find Resources Folder"
+				className="ArcProViewer.Buttons.FindResourcesFolderButton"
+				loadOnClick="true"
+				smallImage="folder16.png"
+				largeImage="folder32.png">
+		  <tooltip heading="Tooltip Heading">
+			Open Windows Explorer at the folder where Riverscapes Viewer saves business logic and symbology resource files.<disabledText />
+		  </tooltip>
+		</button>
+		<button id="RiverscapesViewer_Buttons_About"
+				caption="About"
+				className="ArcProViewer.Buttons.AboutButton"
+				loadOnClick="true"
+				smallImage="viewer16.png"
+				largeImage="viewer32.png">
+		  <tooltip heading="Tooltip Heading">
+			About Riverscapes Viewer<disabledText />
+		  </tooltip>
+		</button>
+	  </controls>
+	  <dockPanes>
+		<dockPane id="ArcProViewer_ProjectExplorerDockpane"
+				  caption=""
+				  image="Images/viewer16.png"
+				  className="ProjectExplorerDockpaneViewModel"
+				  dock="group"
+				  dockWith="esri_core_projectDockPane">
+		  <content className="ProjectExplorerDockpaneView" />
+		</dockPane>
+	  </dockPanes>
+	</insertModule>
+  </modules>
+</ArcGIS>

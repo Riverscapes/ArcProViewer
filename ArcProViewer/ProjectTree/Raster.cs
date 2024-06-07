@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
+using System.Windows.Navigation;
 
 namespace ArcProViewer.ProjectTree
 {
@@ -10,5 +13,8 @@ namespace ArcProViewer.ProjectTree
         {
 
         }
+
+        public override Uri GISUri => new Uri(this.GISPath);
+
     }
 }

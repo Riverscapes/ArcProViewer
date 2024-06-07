@@ -1,4 +1,20 @@
-﻿
+﻿/*
+ * Hieerarchy of dataset classes
+ * 
+ * BaseDataset
+ *    FileSystemDataset
+ *       GISDataset (IGISLayer)
+ *          Raster
+ *          TIN (IGISLayer)
+ *          Vector (IGISLayer)
+ *     WMSLayer
+ * 
+ *  ProjectDataset
+ *     GISLayer
+ * 
+ * 
+ */
+
 namespace ArcProViewer.ProjectTree
 {
     public abstract class BaseDataset

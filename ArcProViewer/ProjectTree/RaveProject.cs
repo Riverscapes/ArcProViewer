@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Controls;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using ArcGIS.Desktop.Core;
 
 namespace ArcProViewer.ProjectTree
 {
@@ -254,6 +255,9 @@ namespace ArcProViewer.ProjectTree
             // Expand the project tree node now that all the items have been added
             ExpandAll(tnProject);
 
+            tnProject.IsExpanded = true;
+            tnProject.UpdateLayout();
+
             // Loop over all tree nodes and collapse any group layers.
             // This has to be done last once all the nodes have their children
             List<TreeViewItem> allNodes = new List<TreeViewItem>();
@@ -267,6 +271,7 @@ namespace ArcProViewer.ProjectTree
         private static void ExpandAll(TreeViewItem item)
         {
             item.IsExpanded = true;
+            item.UpdateLayout();
 
             foreach (object obj in item.Items)
             {

@@ -5,6 +5,8 @@ using System.Xml;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Controls;
+using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace ArcProViewer.ProjectTree
 {
@@ -17,16 +19,16 @@ namespace ArcProViewer.ProjectTree
         // Determines whether uses V1 or V2 XSD and business logic
         public readonly int Version;
 
-        public RaveProject(FileInfo projectFile)
+        public RaveProject(string projectFile)
         {
 
 
-            ProjectFile = projectFile;
+            ProjectFile = new FileInfo(projectFile);
 
             try
             {
                 XmlDocument xmlDoc = new XmlDocument();
-                xmlDoc.Load(projectFile.FullName);
+                xmlDoc.Load(ProjectFile.FullName);
 
                 // Determine whether the project XSD is version 1 or version 2
                 this.Version = GetVersion(xmlDoc);
@@ -43,7 +45,7 @@ namespace ArcProViewer.ProjectTree
             }
             catch (Exception ex)
             {
-                ex.Data["Project File"] = projectFile.FullName;
+                ex.Data["Project File"] = ProjectFile.FullName;
                 throw;
             }
         }
@@ -72,9 +74,9 @@ namespace ArcProViewer.ProjectTree
             throw ex;
         }
 
-        public static bool IsSame(RaveProject proj1, FileInfo projectFile)
+        public static bool IsSame(RaveProject proj1, string projectFile)
         {
-            return string.Compare(proj1.ProjectFile.FullName, projectFile.FullName) == 0;
+            return string.Compare(proj1.ProjectFile.FullName, projectFile) == 0;
         }
 
         //private FileInfo AbsolutePath(string relativePath)
@@ -102,7 +104,7 @@ namespace ArcProViewer.ProjectTree
             List<string> SearchFolders = new List<string>()
             {
                 ProjectFile.DirectoryName,
-                Path.Combine(ucProjectExplorer.AppDataFolder.FullName, Properties.Resources.BusinessLogicXMLFolder, versionFolder)
+                Path.Combine(ProjectExplorerDockpaneViewModel.AppDataFolder.FullName, Properties.Resources.BusinessLogicXMLFolder, versionFolder)
             };
 
             foreach (string folder in SearchFolders)
@@ -175,35 +177,36 @@ namespace ArcProViewer.ProjectTree
         /// </summary>
         /// <param name="treProject"></param>
         /// <returns></returns>
-        public TreeNode LoadNewProject(TreeView treProject, ContextMenuStrip cmsProjectView)
+        public TreeViewItem LoadNewProject(TreeView treProject, ContextMenu cmsProjectView)
         {
-            TreeNode tnProject = new TreeNode("TITLE_NOT_FOUND", 1, 1);
+            TreeViewItem tnProject = CreateTreeViewItem("TITLE_NOT_FOUND", string.Empty);
             tnProject.Tag = this;
-            treProject.Nodes.Insert(0, tnProject);
+            treProject.Items.Insert(0, tnProject);
 
             // Assign the project CMS here so that it is available if anything else crashes or goes wrong.
             // Allows the user to unload the partially loaded project.
-            treProject.ContextMenuStrip = cmsProjectView;
+            treProject.ContextMenu = cmsProjectView;
 
-            TreeNode tnResult = LoadProjectIntoNode(tnProject);
+            TreeViewItem tnResult = LoadProjectIntoNode(tnProject);
 
             // If nothing returned then something went wrong. Remove the temporary node.
             if (tnResult == null)
             {
-                tnProject.Remove();
+                ((TreeViewItem)tnProject.Parent).Items.Remove(tnProject);
+
                 MessageBox.Show(string.Format("Failed to load project because there is no valid business logic XML file for projects of type '{0}'.", ProjectType)
                     + "\n\nEnsure that you have updated the RAVE resource files using the tool under the Help menu on the RAVE toolbar."
-                    
-                    , "Missing Business Logic XML File", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    , "Missing Business Logic XML File", MessageBoxButton.OK, MessageBoxImage.Information);
             }
 
             return tnResult;
         }
 
-        public TreeNode LoadProjectIntoNode(TreeNode tnProject)
+        public TreeViewItem LoadProjectIntoNode(TreeViewItem tnProject)
         {
             // Remove all the existing child nodes (required if refreshing existing tree node)
-            tnProject.Nodes.Clear();
+            tnProject.Items.Clear();
 
             FileInfo businessLogic = LoadBusinessLogicXML();
             if (businessLogic == null)
@@ -214,7 +217,7 @@ namespace ArcProViewer.ProjectTree
             return LoadTree(tnProject, businessLogic);
         }
 
-        public TreeNode LoadTree(TreeNode tnProject, FileInfo businessLogicXML)
+        public TreeViewItem LoadTree(TreeViewItem tnProject, FileInfo businessLogicXML)
         {
             // Determine the type of project
             XmlDocument xmlProject = new XmlDocument();
@@ -227,12 +230,12 @@ namespace ArcProViewer.ProjectTree
             XmlNode nodBLRoot = xmlBusiness.SelectSingleNode("Project/Node");
             if (!(nodBLRoot is XmlNode))
             {
-                MessageBox.Show("Business logic XML file does not contain 'Project/Node' XPath.", "Business Logic Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Business logic XML file does not contain 'Project/Node' XPath.", "Business Logic Error", MessageBoxButton.OK, MessageBoxImage.Information);
                 return null;
             }
 
             // Retrieve and apply the project name to the parent node
-            tnProject.Text = GetLabel(nodBLRoot, projectXMLRoot);
+            tnProject.Header = GetLabel(nodBLRoot, projectXMLRoot);
 
             // The parent node might specify the starting project node (e.g. Riverscapes Context and VBET)
             XmlAttribute attXPath = nodBLRoot.Attributes["xpath"];
@@ -249,33 +252,46 @@ namespace ArcProViewer.ProjectTree
             LoadProjectViews(tnProject, xmlBusiness);
 
             // Expand the project tree node now that all the items have been added
-            tnProject.ExpandAll();
+            ExpandAll(tnProject);
 
             // Loop over all tree nodes and collapse any group layers.
             // This has to be done last once all the nodes have their children
-            List<TreeNode> allNodes = new List<TreeNode>();
-            foreach (TreeNode node in tnProject.Nodes)
+            List<TreeViewItem> allNodes = new List<TreeViewItem>();
+            foreach (TreeViewItem node in tnProject.Items)
                 GetAllNodes(allNodes, node);
-            allNodes.Where(x => x.Tag is ProjectTree.GroupLayer && ((ProjectTree.GroupLayer)x.Tag).Collapse).ToList().ForEach(x => x.Collapse());
+            allNodes.Where(x => x.Tag is GroupLayer && ((GroupLayer)x.Tag).Collapse).ToList().ForEach(x => x.IsExpanded = false);
 
             return tnProject;
         }
 
-        private TreeNode LoadProjectViews(TreeNode tnProject, XmlNode xmlBusiness)
+        private static void ExpandAll(TreeViewItem item)
+        {
+            item.IsExpanded = true;
+
+            foreach (object obj in item.Items)
+            {
+                if (obj is TreeViewItem)
+                {
+                    ExpandAll(obj as TreeViewItem);
+                }
+            }
+        }
+
+        private TreeViewItem LoadProjectViews(TreeViewItem tnProject, XmlNode xmlBusiness)
         {
             XmlNode nodViews = xmlBusiness.SelectSingleNode("Project/Views");
             if (nodViews == null)
                 return null;
 
             XmlAttribute attDefault = nodViews.Attributes["default"];
-            TreeNode defaultView = null;
+            TreeViewItem defaultView = null;
             string defaultViewName = string.Empty;
             if (attDefault is XmlAttribute)
             {
                 defaultViewName = attDefault.InnerText;
             }
 
-            TreeNode tnViews = null;
+            TreeViewItem tnViews = null;
 
             foreach (XmlNode nodView in nodViews.SelectNodes("View"))
             {
@@ -291,8 +307,7 @@ namespace ArcProViewer.ProjectTree
                 bool IsDefaultView = !string.IsNullOrEmpty(defaultViewName) && string.Compare(defaultViewName, viewId) == 0;
 
                 string viewName = nodView.Attributes["name"].InnerText;
-                ProjectTree.ProjectView view = new ProjectTree.ProjectView(viewId, viewName, IsDefaultView);
-
+                ProjectView view = new ProjectView(viewId, viewName, IsDefaultView);
 
                 foreach (XmlNode nodLayer in nodView.SelectNodes("Layers/Layer"))
                 {
@@ -307,8 +322,8 @@ namespace ArcProViewer.ProjectTree
                         bool.TryParse(attVisible.InnerText, out isVisible);
                     }
 
-                    TreeNode tnLayer = FindTreeNodeById(tnProject, attId.InnerText);
-                    if (tnLayer is TreeNode)
+                    TreeViewItem tnLayer = FindTreeNodeById(tnProject, attId.InnerText);
+                    if (tnLayer is TreeViewItem)
                     {
                         view.Layers.Add(new ProjectTree.ProjectViewLayer(tnLayer, isVisible));
                     }
@@ -319,14 +334,14 @@ namespace ArcProViewer.ProjectTree
                     // Create the project tree branch that will contain the views
                     if (tnViews == null)
                     {
-                        tnViews = new TreeNode("Project Views", 1, 1);
-                        tnViews.Tag = new ProjectTree.GroupLayer("Project Views", true, string.Empty);
-                        tnProject.Nodes.Add(tnViews);
+                        tnViews = CreateTreeViewItem("Project Views", "viewer16");
+                        tnViews.Tag = new GroupLayer("Project Views", true, string.Empty);
+                        tnProject.Items.Add(tnViews);
                     }
 
-                    TreeNode tnView = new TreeNode(viewName, 8, 8);
+                    TreeViewItem tnView = CreateTreeViewItem(viewName, "view16");
                     tnView.Tag = view;
-                    tnViews.Nodes.Add(tnView);
+                    tnViews.Items.Add(tnView);
 
                     // Check if this is the default view
                     if (view.IsDefaultView)
@@ -337,17 +352,17 @@ namespace ArcProViewer.ProjectTree
             return defaultView;
         }
 
-        private TreeNode FindTreeNodeById(TreeNode parent, string id)
+        private TreeViewItem FindTreeNodeById(TreeViewItem parent, string id)
         {
             string nodeId = string.Empty;
-            if (parent.Tag is ProjectTree.BaseDataset)
+            if (parent.Tag is BaseDataset)
             {
-                ProjectTree.BaseDataset ds = parent.Tag as ProjectTree.BaseDataset;
+                BaseDataset ds = parent.Tag as BaseDataset;
                 nodeId = ds.Id;
             }
-            else if (parent.Tag is ProjectTree.GroupLayer)
+            else if (parent.Tag is GroupLayer)
             {
-                ProjectTree.GroupLayer ds = parent.Tag as ProjectTree.GroupLayer;
+                GroupLayer ds = parent.Tag as GroupLayer;
                 nodeId = ds.Id;
             }
 
@@ -357,18 +372,18 @@ namespace ArcProViewer.ProjectTree
                     return parent;
             }
 
-            TreeNode result = null;
-            foreach (TreeNode child in parent.Nodes)
+            TreeViewItem result = null;
+            foreach (TreeViewItem child in parent.Items)
             {
                 result = FindTreeNodeById(child, id);
-                if (result is TreeNode)
+                if (result is TreeViewItem)
                     return result;
             }
 
             return null;
         }
 
-        private void LoadTreeNode(TreeNode tnParent, XmlNode xmlProject, XmlNode xmlBusiness)
+        private void LoadTreeNode(TreeViewItem tnParent, XmlNode xmlProject, XmlNode xmlBusiness)
         {
             try
             {
@@ -380,7 +395,7 @@ namespace ArcProViewer.ProjectTree
             }
         }
 
-        private void LoadTreeNodeWorker(TreeNode tnParent, XmlNode xmlProject, XmlNode xmlBusiness)
+        private void LoadTreeNodeWorker(TreeViewItem tnParent, XmlNode xmlProject, XmlNode xmlBusiness)
         {
             if (xmlBusiness.NodeType == XmlNodeType.Comment)
                 return;
@@ -391,8 +406,8 @@ namespace ArcProViewer.ProjectTree
                 XmlAttribute attLabel = xmlBusiness.Attributes["label"];
                 if (attLabel is XmlAttribute && !string.IsNullOrEmpty(attLabel.InnerText))
                 {
-                    TreeNode newNode = new TreeNode(attLabel.InnerText, 1, 1);
-                    tnParent.Nodes.Add(newNode);
+                    TreeViewItem newNode = CreateTreeViewItem(attLabel.InnerText);
+                    tnParent.Items.Add(newNode);
 
                     // Repeat the business logic items inside the repeater for all items in the xPath
                     XmlAttribute attXPath = xmlBusiness.Attributes["xpath"];
@@ -495,9 +510,9 @@ namespace ArcProViewer.ProjectTree
                         }
                     }
 
-                    TreeNode newNode = new TreeNode(label, 1, 1);
-                    newNode.Tag = new ProjectTree.GroupLayer(label, collapsed, id);
-                    tnParent.Nodes.Add(newNode);
+                    TreeViewItem newNode = CreateTreeViewItem(label);
+                    newNode.Tag = new GroupLayer(label, collapsed, id);
+                    tnParent.Items.Add(newNode);
                     tnParent = newNode;
                 }
 
@@ -506,19 +521,18 @@ namespace ArcProViewer.ProjectTree
             }
         }
 
-        public static void GetAllNodes(List<TreeNode> nodes, TreeNode node)
+        public static void GetAllNodes(List<TreeViewItem> nodes, TreeViewItem node)
         {
             // Add the current node to the list
             nodes.Add(node);
-            foreach (TreeNode child in node.Nodes)
+            foreach (TreeViewItem child in node.Items)
                 GetAllNodes(nodes, child);
         }
 
-        private void AddGISNode(TreeNode tnParent, string type, XmlNode nodGISNode, string symbology, string label, short transparency, string id, string query_definition)
+        private void AddGISNode(TreeViewItem tnParent, string type, XmlNode nodGISNode, string symbology, string label, short transparency, string id, string query_definition)
         {
             if (nodGISNode == null)
                 return;
-
 
             // If the project node has a ref attribute then lookup the redirect to the inputs
             XmlAttribute attRef = nodGISNode.Attributes["ref"];
@@ -595,19 +609,19 @@ namespace ArcProViewer.ProjectTree
                 }
             }
 
-            ProjectTree.FileSystemDataset dataset = null;
+            FileSystemDataset dataset = null;
             switch (type.ToLower())
             {
                 case "file":
                 case "report":
                     {
-                        dataset = new ProjectTree.FileSystemDataset(this, label, new FileInfo(absPath), 0, 0, id);
+                        dataset = new FileSystemDataset(this, label, new FileInfo(absPath), "viewer16", "viewer16", id);
                         break;
                     }
 
                 case "raster":
                     {
-                        dataset = new ProjectTree.Raster(this, label, absPath, symbology, transparency, id, metadata);
+                        dataset = new Raster(this, label, absPath, symbology, transparency, id, metadata);
                         break;
                     }
 
@@ -616,13 +630,13 @@ namespace ArcProViewer.ProjectTree
                 case "point":
                 case "polygon":
                     {
-                        dataset = new ProjectTree.Vector(this, label, absPath, symbology, transparency, id, metadata, query_definition);
+                        dataset = new Vector(this, label, absPath, symbology, transparency, id, metadata, query_definition);
                         break;
                     }
 
                 case "tin":
                     {
-                        dataset = new ProjectTree.TIN(this, label, absPath, transparency, id, metadata);
+                        dataset = new TIN(this, label, absPath, transparency, id, metadata);
                         break;
                     }
 
@@ -630,9 +644,9 @@ namespace ArcProViewer.ProjectTree
                     throw new Exception(string.Format("Unhandled Node type attribute string '{0}'", type));
             }
 
-            TreeNode newNode = new TreeNode(label, dataset.ImageIndex, dataset.ImageIndex);
+            TreeViewItem newNode = CreateTreeViewItem(label, dataset.ImageFileName);
             newNode.Tag = dataset;
-            tnParent.Nodes.Add(newNode);
+            tnParent.Items.Add(newNode);
         }
 
         private static string GetXPath(XmlNode businessLogicNode, string xPath)
@@ -685,6 +699,23 @@ namespace ArcProViewer.ProjectTree
             }
 
             return string.Empty;
+        }
+
+        private TreeViewItem CreateTreeViewItem(string text, string imageFileName = "viewer16")
+        {
+            TreeViewItem treeViewItem = new TreeViewItem();
+            treeViewItem.Header = text;
+
+            if (!string.IsNullOrEmpty(imageFileName))
+            {
+                //Image image = new Image();
+                //BitmapImage bitmapImage = new BitmapImage(new Uri(string.Format("pack://application:,,,/{0}.png", imageFileName)));
+                //image.Source = bitmapImage;
+                //image.Width = 16;
+                //image.Height = 16;
+            }
+
+            return treeViewItem;
         }
     }
 }

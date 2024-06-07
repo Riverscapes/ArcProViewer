@@ -16,7 +16,7 @@ namespace ArcProViewer.ProjectTree
         }
 
         public WMSLayer(string name, string url, int imageIndex, string id)
-            : base(name, imageIndex, imageIndex, id)
+            : base(name, "satellite16", "satellite16", id)
         {
             URL = url;
         }

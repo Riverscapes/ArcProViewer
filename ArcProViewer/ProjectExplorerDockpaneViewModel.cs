@@ -12,11 +12,15 @@ using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Desktop.KnowledgeGraph;
 using ArcGIS.Desktop.Layouts;
 using ArcGIS.Desktop.Mapping;
+using ArcProViewer.ProjectTree;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace ArcProViewer
 {
@@ -47,16 +51,17 @@ namespace ArcProViewer
             get => _heading;
             set => SetProperty(ref _heading, value);
         }
-    }
+        public static DirectoryInfo AppDataFolder { get { return new DirectoryInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Properties.Resources.AppDataFolder)); } }
 
-    /// <summary>
-    /// Button implementation to show the DockPane.
-    /// </summary>
-    internal class ProjectExplorerDockpane_ShowButton : Button
-    {
-        protected override void OnClick()
+        internal static void LoadProject(string filePath)
         {
-            ProjectExplorerDockpaneViewModel.Show();
+            DockPane pane = FrameworkApplication.DockPaneManager.Find(_dockPaneID);
+            if (pane == null)
+                return;
+
+            ProjectExplorerDockpaneViewModel pevm = (ProjectExplorerDockpaneViewModel)pane;
+            ProjectExplorerDockpaneView content = pevm.Content as ProjectExplorerDockpaneView;
+            content.LoadProject(filePath);
         }
     }
 }

@@ -1,22 +1,6 @@
-﻿using ArcGIS.Core.CIM;
-using ArcGIS.Core.Data;
-using ArcGIS.Core.Geometry;
-using ArcGIS.Desktop.Catalog;
-using ArcGIS.Desktop.Core;
-using ArcGIS.Desktop.Editing;
-using ArcGIS.Desktop.Extensions;
-using ArcGIS.Desktop.Framework;
+﻿using System;
 using ArcGIS.Desktop.Framework.Contracts;
-using ArcGIS.Desktop.Framework.Dialogs;
-using ArcGIS.Desktop.Framework.Threading.Tasks;
-using ArcGIS.Desktop.KnowledgeGraph;
-using ArcGIS.Desktop.Layouts;
-using ArcGIS.Desktop.Mapping;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows;
 
 namespace ArcProViewer.Buttons
 {
@@ -24,6 +8,33 @@ namespace ArcProViewer.Buttons
     {
         protected override void OnClick()
         {
+            try
+            {
+                if (MessageBox.Show("Are you sure you want to update the Riverscapes Viewer AddIn resources?", "Update Resources", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No)
+                      == MessageBoxResult.Yes)
+                {
+                    // TODO: Cursor
+                    //Cursor = Cursors.WaitCursor;
+
+                    ResourceUpdater rru = new ResourceUpdater(Properties.Resources.ResourcesURL, Properties.Resources.BusinessLogicXMLFolder, Properties.Resources.AppDataSymbologyFolder);
+
+                    string appDataResources = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Properties.Resources.AppDataFolder);
+                    ResourceUpdater.UpdateResults results = rru.Update(appDataResources);
+
+                    // TOODO: Cursor
+                    //Cursor.Current = Cursors.Default;
+                    MessageBox.Show(string.Format("The Riverscapes Viewer resources were updated successfully.\n{0} resource files were updated.", results.TotalDownloads), "Resources Updated", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                // TODO
+                //Cursor.Current = Cursors.Default;
+                //ErrorHandling.frmException.HandleException(ex, "Error Showing RAVE About Form", string.Empty);
+            }
+
+            // TODO: GIS
+            //ArcMap.Application.CurrentTool = null;
         }
     }
 }

@@ -61,6 +61,15 @@ namespace ArcProViewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to RiverscapesViewer.
+        /// </summary>
+        internal static string AppDataFolder {
+            get {
+                return ResourceManager.GetString("AppDataFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Symbology\esri.
         /// </summary>
         internal static string AppDataSymbologyFolder {
@@ -156,6 +165,16 @@ namespace ArcProViewer.Properties {
         internal static string ResourcesURL {
             get {
                 return ResourceManager.GetString("ResourcesURL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] viewer16 {
+            get {
+                object obj = ResourceManager.GetObject("viewer16", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         

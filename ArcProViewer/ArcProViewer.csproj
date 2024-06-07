@@ -20,12 +20,16 @@
     <None Remove="Images\description32.png" />
     <None Remove="Images\draft32.png" />
     <None Remove="Images\expand32.png" />
+    <None Remove="Images\folder16.png" />
     <None Remove="Images\folder32.png" />
+    <None Remove="Images\help16.png" />
     <None Remove="Images\help32.png" />
     <None Remove="Images\mActionEditCopy.png" />
     <None Remove="Images\metadata.png" />
     <None Remove="Images\open32.png" />
+    <None Remove="Images\refresh16.png" />
     <None Remove="Images\refresh32.png" />
+    <None Remove="Images\settings16.png" />
     <None Remove="Images\settings32.png" />
     <None Remove="Images\summarize32.png" />
     <None Remove="Images\upload_project32.png" />
@@ -51,19 +55,22 @@
     <Content Include="Images\description32.png" />
     <Content Include="Images\draft32.png" />
     <Content Include="Images\expand32.png" />
+    <Content Include="Images\folder16.png" />
     <Content Include="Images\folder32.png" />
+    <Content Include="Images\help16.png" />
     <Content Include="Images\help32.png" />
     <Content Include="Images\mActionEditCopy.png" />
     <Content Include="Images\metadata.png" />
     <Content Include="Images\open32.png" />
     <Content Include="Images\refresh32.png" />
+    <Content Include="Images\settings16.png" />
     <Content Include="Images\settings32.png" />
     <Content Include="Images\summarize32.png" />
     <Content Include="Images\upload_project32.png" />
     <Content Include="Images\view32.png" />
-    <Content Include="Images\viewer16.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Resource Include="Images\viewer16.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Content Include="Images\viewer32.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>    
@@ -159,12 +166,29 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Images\Layers\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
    <Import Project="C:\Program Files\ArcGIS\Pro\bin\Esri.ProApp.SDK.Desktop.targets" Condition="Exists('C:\Program Files\ArcGIS\Pro\bin\Esri.ProApp.SDK.Desktop.targets') AND !Exists('Esri.ArcGISPro.Extensions.targets')" />
 </Project>

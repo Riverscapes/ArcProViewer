@@ -39,8 +39,8 @@ namespace ArcProViewer.ProjectTree
             }
         }
 
-        public GISDataset(RaveProject project, string name, FileSystemInfo fsInfo, string symbologyKey, short transparency, int imageIndex_Exists, int imageIndex_Missing, string id, Dictionary<string, string> metadata)
-            : base(project, name, fsInfo, imageIndex_Exists, imageIndex_Missing, id)
+        public GISDataset(RaveProject project, string name, FileSystemInfo fsInfo, string symbologyKey, short transparency, string image_Exists, string image_Missing, string id, Dictionary<string, string> metadata)
+            : base(project, name, fsInfo, image_Exists, image_Missing, id)
         {
             SymbologyKey = symbologyKey;
             Transparency = transparency;

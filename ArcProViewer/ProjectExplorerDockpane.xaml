@@ -19,15 +19,17 @@
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <DockPanel
             Grid.Row="0"
-            Height="30"
             KeyboardNavigation.TabNavigation="Local"
             LastChildFill="true">
-            <StackPanel Orientation="Vertical">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
                 <TextBlock Style="{DynamicResource Esri_TextBlockDockPaneHeader}" Text="{Binding Heading}">
                     <TextBlock.ToolTip>
                         <WrapPanel MaxWidth="300" Orientation="Vertical">
@@ -35,8 +37,8 @@
                         </WrapPanel>
                     </TextBlock.ToolTip>
                 </TextBlock>
-                <TreeView x:Name="treProject" />
-            </StackPanel>
+                <TreeView x:Name="treProject" Grid.Row="1" MouseDoubleClick="treProject_DoubleClick" />
+            </Grid>
         </DockPanel>
     </Grid>
 </UserControl>

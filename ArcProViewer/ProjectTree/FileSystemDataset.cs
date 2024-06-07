@@ -18,8 +18,8 @@ namespace ArcProViewer.ProjectTree
         public readonly RaveProject Project;
         public readonly FileSystemInfo Path;
 
-        public FileSystemDataset(RaveProject project, string name, FileSystemInfo fsInfo, int imageIndex_Exists, int imageIndex_Missing, string id)
-            : base(name, imageIndex_Exists, imageIndex_Missing, id)
+        public FileSystemDataset(RaveProject project, string name, FileSystemInfo fsInfo, string image_Exists, string image_Missing, string id)
+            : base(name, image_Exists, image_Missing, id)
         {
             Project = project;
             Path = fsInfo;

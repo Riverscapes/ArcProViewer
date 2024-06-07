@@ -62,7 +62,7 @@
 		  </tooltip>
 		</button>
 		<button id="RiverscapesViewer_Buttons_ProjectExplorerDockpane"
-				caption="Project Explorer" className="ProjectExplorerDockpane_ShowButton"
+				caption="Project Explorer" className="ArcProViewer.Buttons.UpdateResourcesButton"
 				loadOnClick="true" smallImage="Images/viewer16.png"
 				largeImage="Images/viewer32.png">
 		  <tooltip heading="Show Dockpane">
@@ -83,8 +83,8 @@
 				caption="Update Resources"
 				className="ArcProViewer.Buttons.UpdateResourcesButton"
 				loadOnClick="true"
-				smallImage="refresh16.png"
-				largeImage="refresh32.png">
+				smallImage="Images/refresh16.png"
+				largeImage="Images/refresh32.png">
 		  <tooltip heading="Tooltip Heading">
 			Update the business logic and symbology resource files that are needed to display Riverscapes projects.<disabledText />
 		  </tooltip>
@@ -93,8 +93,8 @@
 				caption="Find Resources Folder"
 				className="ArcProViewer.Buttons.FindResourcesFolderButton"
 				loadOnClick="true"
-				smallImage="folder16.png"
-				largeImage="folder32.png">
+				smallImage="Images/folder16.png"
+				largeImage="Images/folder32.png">
 		  <tooltip heading="Tooltip Heading">
 			Open Windows Explorer at the folder where Riverscapes Viewer saves business logic and symbology resource files.<disabledText />
 		  </tooltip>
@@ -103,8 +103,8 @@
 				caption="About"
 				className="ArcProViewer.Buttons.AboutButton"
 				loadOnClick="true"
-				smallImage="viewer16.png"
-				largeImage="viewer32.png">
+				smallImage="Images/viewer16.png"
+				largeImage="Images/viewer32.png">
 		  <tooltip heading="Tooltip Heading">
 			About Riverscapes Viewer<disabledText />
 		  </tooltip>

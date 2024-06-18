@@ -6,7 +6,7 @@
     xmlns:extensions="clr-namespace:ArcGIS.Desktop.Extensions;assembly=ArcGIS.Desktop.Extensions"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="clr-namespace:ArcProViewer"
-    d:DataContext="{Binding Path=ui.ProjectExplorerDockpaneViewModel}"
+    d:DataContext="{Binding Path=ProjectExplorerDockpaneViewModel}"
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
@@ -37,7 +37,24 @@
                         </WrapPanel>
                     </TextBlock.ToolTip>
                 </TextBlock>
-                <TreeView x:Name="treProject" Grid.Row="1" MouseDoubleClick="treProject_DoubleClick" />
+                <TreeView
+                    x:Name="treProject"
+                    Grid.Row="1"
+                    ItemsSource="{Binding TreeViewItems}"
+                    MouseDoubleClick="treProject_DoubleClick">
+                    <TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                            <StackPanel Orientation="Horizontal">
+                                <Image
+                                    Width="16"
+                                    Height="16"
+                                    Margin="0,0,5,0"
+                                    Source="{Binding ImagePath}" />
+                                <TextBlock Text="{Binding Header}" />
+                            </StackPanel>
+                        </HierarchicalDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
             </Grid>
         </DockPanel>
     </Grid>

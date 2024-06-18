@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using ArcGIS.Desktop.Core;
+using System.Collections.ObjectModel;
 
 namespace ArcProViewer.ProjectTree
 {

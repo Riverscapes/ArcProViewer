@@ -26,6 +26,8 @@ namespace ArcProViewer
         public ProjectExplorerDockpaneView()
         {
             InitializeComponent();
+
+            this.DataContext = new ProjectExplorerDockpaneViewModel();
         }
 
         private void treProject_DoubleClick(object sender, EventArgs e)

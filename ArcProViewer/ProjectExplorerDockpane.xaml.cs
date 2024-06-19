@@ -109,90 +109,68 @@ namespace ArcProViewer
             }
         }
 
-        /// <summary>
-        /// Get a unique name for a project suitable for use in project tree
-        /// </summary>
-        /// <param name="originalName">The name of the project from the XML</param>
-        /// <returns>If a project with the same name exists in the project tree
-        /// already then this method will return the original name plus a unique suffix</returns>
-        private string GetUniqueProjectName(RaveProject proj, string originalName)
+
+
+        //public void LoadProject(string projectFile)
+        //{
+        //    // Detect if project is already in tree and simply select the node and return;
+        //    foreach (TreeViewItem rootNod in treProject.Items)
+        //    {
+        //        if (rootNod.Tag is RaveProject && RaveProject.IsSame((RaveProject)rootNod.Tag, projectFile))
+        //        {
+        //            rootNod.IsSelected = true;
+        //            rootNod.Focus();
+        //            return;
+        //        }
+        //    }
+
+        //    // TODO: temp variable to get it compiling. Recode context menus
+        //    ContextMenu cmsProject = null;
+
+        //    RaveProject newProject = new RaveProject(projectFile);
+        //    TreeViewItem tnProject = newProject.LoadNewProject(treProject, cmsProject);
+        //    tnProject.Header = GetUniqueProjectName(newProject, tnProject.Header.ToString());
+
+        //    // Load default project view
+        //    if (Properties.Settings.Default.LoadDefaultProjectView)
+        //    {
+        //        try
+        //        {
+        //            // Find the default project view among all the tree nodes
+        //            List<TreeViewItem> allNodes = new List<TreeViewItem>();
+        //            foreach (TreeViewItem node in tnProject.Items)
+        //                RaveProject.GetAllNodes(allNodes, node);
+
+        //            TreeViewItem nodDefault = allNodes.FirstOrDefault(x => x.Tag is ProjectTree.ProjectView && ((ProjectTree.ProjectView)x.Tag).IsDefaultView);
+        //            if (nodDefault is TreeViewItem)
+        //            {
+        //                AddChildrenToMap(nodDefault);
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            // Loading the default project view is optional. Do nothing in production
+        //            System.Diagnostics.Debug.Assert(false, ex.Message);
+        //        }
+        //    }
+
+        //    //TODO
+        //    //AssignContextMenus(tnProject);
+        //}
+
+        private void AddChildrenToMap(TreeViewItemModel e)
         {
-            int occurences = 0;
-            foreach (TreeViewItem nod in treProject.Items)
-            {
-                if (nod.Tag is RaveProject && nod.Tag != proj)
-                {
-                    if (nod.Header.ToString().StartsWith(originalName))
-                        occurences++;
-                }
-            }
-
-            if (occurences > 0)
-                return string.Format("{0} Copy {1}", originalName, occurences);
-            else
-                return originalName;
-        }
-
-        public void LoadProject(string projectFile)
-        {
-            // Detect if project is already in tree and simply select the node and return;
-            foreach (TreeViewItem rootNod in treProject.Items)
-            {
-                if (rootNod.Tag is RaveProject && RaveProject.IsSame((RaveProject)rootNod.Tag, projectFile))
-                {
-                    rootNod.IsSelected = true;
-                    rootNod.Focus();
-                    return;
-                }
-            }
-
-            // TODO: temp variable to get it compiling. Recode context menus
-            ContextMenu cmsProject = null;
-
-            RaveProject newProject = new RaveProject(projectFile);
-            TreeViewItem tnProject = newProject.LoadNewProject(treProject, cmsProject);
-            tnProject.Header = GetUniqueProjectName(newProject, tnProject.Header.ToString());
-
-            // Load default project view
-            if (Properties.Settings.Default.LoadDefaultProjectView)
-            {
-                try
-                {
-                    // Find the default project view among all the tree nodes
-                    List<TreeViewItem> allNodes = new List<TreeViewItem>();
-                    foreach (TreeViewItem node in tnProject.Items)
-                        RaveProject.GetAllNodes(allNodes, node);
-
-                    TreeViewItem nodDefault = allNodes.FirstOrDefault(x => x.Tag is ProjectTree.ProjectView && ((ProjectTree.ProjectView)x.Tag).IsDefaultView);
-                    if (nodDefault is TreeViewItem)
-                    {
-                        AddChildrenToMap(nodDefault);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    // Loading the default project view is optional. Do nothing in production
-                    System.Diagnostics.Debug.Assert(false, ex.Message);
-                }
-            }
-
-            //TODO
-            //AssignContextMenus(tnProject);
-        }
-
-        private void AddChildrenToMap(TreeViewItem e)
-        {
-            e.Items.OfType<TreeViewItem>().ToList().ForEach(x => AddChildrenToMap(x));
+            e.Children.OfType<TreeViewItemModel>().ToList().ForEach(x => AddChildrenToMap(x));
 
             GISDataset ds = null;
 
-            if (e.Tag is GISDataset)
+            if (e.Item is GISDataset)
             {
-                ds = e.Tag as GISDataset;
+                ds = e.Item as GISDataset;
             }
-            else if (e.Tag is ProjectView)
+            else if (e.Item is ProjectView)
             {
-                ((ProjectView)e.Tag).Layers.ForEach(x => AddChildrenToMap(x.LayerNode));
+                ((ProjectView)e.Item).Layers.ForEach(x => AddChildrenToMap(x.LayerNode));
             }
 
             if (ds is GISDataset)

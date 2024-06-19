@@ -2,15 +2,17 @@
 
 namespace ArcProViewer.ProjectTree
 {
-    public class GroupLayer
+    public class GroupLayer: ITreeItem
     {
-        public readonly string Label;
+        public string Name { get; }
         public readonly bool Collapse;
         public readonly string Id;
 
+        public string ImagePath => "folder16.png";
+
         public GroupLayer(string label, bool collapse, string id)
         {
-            Label = label;
+            Name = label;
             Collapse = collapse;
             Id = id;
         }

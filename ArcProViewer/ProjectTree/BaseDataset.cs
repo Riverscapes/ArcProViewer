@@ -17,7 +17,7 @@
 
 namespace ArcProViewer.ProjectTree
 {
-    public abstract class BaseDataset
+    public abstract class BaseDataset: ITreeItem
     {
         public string Name { get; private set; }
         public string Id { get; private set; }
@@ -25,6 +25,8 @@ namespace ArcProViewer.ProjectTree
         // No folder and no file extension
         private readonly string ImageFileNameExists;
         private readonly string ImageFileNameMissing;
+
+        public string ImagePath => ImageFileName;
 
         public abstract bool Exists { get; }
 

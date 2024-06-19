@@ -4,10 +4,10 @@ namespace ArcProViewer.ProjectTree
 {
     public class ProjectViewLayer
     {
-        public readonly TreeViewItem LayerNode;
+        public readonly TreeViewItemModel LayerNode;
         public readonly bool Visible;
 
-        public ProjectViewLayer(TreeViewItem layerNode, bool visible)
+        public ProjectViewLayer(TreeViewItemModel layerNode, bool visible)
         {
             LayerNode = layerNode;
             Visible = visible;

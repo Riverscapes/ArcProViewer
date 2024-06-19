@@ -3,13 +3,14 @@ using System.Collections.Generic;
 
 namespace ArcProViewer.ProjectTree
 {
-public    class ProjectView
+    public class ProjectView : ITreeItem
     {
         public readonly string Id;
-        public readonly string Name;
+        public string Name { get; }
         public readonly bool IsDefaultView;
         public readonly List<ProjectViewLayer> Layers;
-            
+        public string ImagePath => "viewer16.png";
+
         public ProjectView(string id, string name, bool is_default)
         {
             Id = id;

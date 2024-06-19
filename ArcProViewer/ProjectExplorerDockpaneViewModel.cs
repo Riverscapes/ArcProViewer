@@ -9,6 +9,7 @@ using ArcGIS.Desktop.Framework;
 using ArcGIS.Desktop.Framework.Contracts;
 using ArcGIS.Desktop.Framework.Dialogs;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
+using ArcGIS.Desktop.Internal.Framework.Utilities;
 using ArcGIS.Desktop.Internal.Mapping.TOC;
 using ArcGIS.Desktop.KnowledgeGraph;
 using ArcGIS.Desktop.Layouts;
@@ -24,7 +25,6 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using static ArcProViewer.ProjectTree.RaveProject;
 
 namespace ArcProViewer
 {
@@ -46,7 +46,10 @@ namespace ArcProViewer
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
 
-        public ProjectExplorerDockpaneViewModel() { }
+        public ProjectExplorerDockpaneViewModel()
+        {
+            TreeViewItems = new ObservableCollection<TreeViewItemModel>();
+        }
 
         /// <summary>
         /// Show the DockPane.
@@ -63,7 +66,7 @@ namespace ArcProViewer
         /// <summary>
         /// Text shown near the top of the DockPane.
         /// </summary>
-        private string _heading = "Riverscapes Viewer xxxx";
+        private string _heading = "Riverscapes Viewer";
         public string Heading
         {
             get => _heading;
@@ -78,49 +81,117 @@ namespace ArcProViewer
                 return;
 
             ProjectExplorerDockpaneViewModel pevm = (ProjectExplorerDockpaneViewModel)pane;
-            ProjectExplorerDockpaneView content = pevm.Content as ProjectExplorerDockpaneView;
-            pevm.LoadProject2(filePath);
+            //ProjectExplorerDockpaneView content = pevm.Content as ProjectExplorerDockpaneView;
 
-            int test = content.treProject.Items.Count;
-            int test2 = pevm.TreeViewItems.Count;
 
-            //content.LoadProject(filePath);
-        }
-
-        internal void LoadProject2(string filePath)
-        {
-            TreeViewItems = new ObservableCollection<TreeViewItemModel>();
-
-            TreeViewItemModel item = new TreeViewItemModel();
-            item.Header = "test";
-            item.ImagePath = "Images/viewer16.png";
-            item.Children = new ObservableCollection<TreeViewItemModel>
+            // Detect if project is already in tree and simply select the node and return;
+            foreach (TreeViewItemModel rootNod in pevm.TreeViewItems)
             {
-               new TreeViewItemModel
+                if (rootNod.Item is RaveProject && ((RaveProject)rootNod.Item).IsSame(filePath))
                 {
-                    Header = "Item 2",
-                    ImagePath = "Images/viewer16.png",
-                    Children = new ObservableCollection<TreeViewItemModel>
+                    // TODO: select the existing node
+                    return;
+                }
+            }
+
+            // TODO: temp variable to get it compiling. Recode context menus
+            ContextMenu cmsProject = null;
+
+            RaveProject newProject = new RaveProject(filePath);
+            newProject.Name = pevm.GetUniqueProjectName(newProject);
+
+            TreeViewItemModel projectItem = new TreeViewItemModel(newProject, null);
+            try
+            {
+                newProject.BuildProjectTree(projectItem, cmsProject);
+                pevm.treeViewItems.Add(projectItem);
+            }
+            catch(Exception ex)
+            {
+                //TODO: show reason that project tree failed to build
+                return;
+            }
+
+            // Load default project view
+            if (Properties.Settings.Default.LoadDefaultProjectView)
+            {
+                try
+                {
+                    // Find the default project view among all the tree nodes
+                    List<TreeViewItemModel> allNodes = new List<TreeViewItemModel>();
+                    foreach (TreeViewItemModel node in projectItem.Children)
+                        TreeViewItemModel.GetAllNodes(allNodes, node);
+
+                    TreeViewItemModel nodDefault = allNodes.FirstOrDefault(x => x.Item is ProjectView && ((ProjectView)x.Item).IsDefaultView);
+                    if (nodDefault is TreeViewItemModel)
                     {
-                        new TreeViewItemModel { Header = "SubItem 2.1", ImagePath = "Images/viewer16.png" }
+                        // TODO: GIS
+                        //AddChildrenToMap(nodDefault);
                     }
                 }
-            };
-            TreeViewItems.Add(item);
+                catch (Exception ex)
+                {
+                    // Loading the default project view is optional. Do nothing in production
+                    System.Diagnostics.Debug.Assert(false, ex.Message);
+                }
+            }
 
-            OnPropertyChanged(nameof(TreeViewItems));
+            //TODO
+            //AssignContextMenus(tnProject);
+        }
+
+        //int test = content.treProject.Items.Count;
+        //int test2 = pevm.TreeViewItems.Count;
+
+        //content.LoadProject(filePath);
+
+
+        //internal void LoadProject2(string filePath)
+        //{
+        //    TreeViewItems = new ObservableCollection<TreeViewItemModel>();
+
+        //    TreeViewItemModel item = new TreeViewItemModel();
+        //    item.Header = "test";
+        //    item.ImagePath = "Images/viewer16.png";
+        //    item.Children = new ObservableCollection<TreeViewItemModel>
+        //    {
+        //       new TreeViewItemModel
+        //        {
+        //            Header = "Item 2",
+        //            ImagePath = "Images/viewer16.png",
+        //            Children = new ObservableCollection<TreeViewItemModel>
+        //            {
+        //                new TreeViewItemModel { Header = "SubItem 2.1", ImagePath = "Images/viewer16.png" }
+        //            }
+        //        }
+        //    };
+        //    TreeViewItems.Add(item);
+
+        //    OnPropertyChanged(nameof(TreeViewItems));
+        //}
+
+        /// <summary>
+        /// Get a unique name for a project suitable for use in project tree
+        /// </summary>
+        /// <param name="originalName">The name of the project from the XML</param>
+        /// <returns>If a project with the same name exists in the project tree
+        /// already then this method will return the original name plus a unique suffix</returns>
+        private string GetUniqueProjectName(RaveProject proj)
+        {
+            int occurences = 0;
+            foreach (TreeViewItemModel nod in TreeViewItems)
+            {
+                if (nod.Item is RaveProject && nod.Item != proj)
+                {
+                    if (nod.Name.StartsWith(proj.Name))
+                        occurences++;
+                }
+            }
+
+            if (occurences > 0)
+                return string.Format("{0} Copy {1}", proj.OriginalName, occurences);
+            else
+                return proj.OriginalName;
         }
     }
-
-public class TreeViewItemModel
-{
-    public string Header { get; set; }
-    public string ImagePath { get; set; }
-    public ObservableCollection<TreeViewItemModel> Children { get; set; }
-
-    public TreeViewItemModel()
-    {
-
-    }
-}
 }

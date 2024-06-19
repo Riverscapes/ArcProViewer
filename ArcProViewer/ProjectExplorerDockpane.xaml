@@ -52,6 +52,14 @@
                                     Source="{Binding ImagePath}" />
                                 <TextBlock Text="{Binding Name}" />
                             </StackPanel>
+                            <HierarchicalDataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding IsExpanded}" Value="True">
+                                    <Setter Property="TreeViewItem.IsExpanded" Value="True" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsExpanded}" Value="False">
+                                    <Setter Property="TreeViewItem.IsExpanded" Value="False" />
+                                </DataTrigger>
+                            </HierarchicalDataTemplate.Triggers>
                         </HierarchicalDataTemplate>
                     </TreeView.ItemTemplate>
                 </TreeView>

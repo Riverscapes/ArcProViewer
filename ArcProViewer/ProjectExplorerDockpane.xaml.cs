@@ -58,6 +58,23 @@ namespace ArcProViewer
             }
         }
 
+        //private void treProject_AfterLoad(object sender, EventArgs e)
+        //{
+        //    foreach (TreeViewItem item in treProject.Items)
+        //        SetGroupsExpanded(item);
+        //}
+
+        //private void SetGroupsExpanded(TreeViewItem item)
+        //{
+
+        //   item.
+
+
+        //    foreach (TreeViewItem item in treProject.Items)
+        //        SetGroupsExpanded(item);
+
+        //}
+
         public async Task OnAddGISToMap(object sender, EventArgs e)
         {
             TreeViewItem selNode = treProject.SelectedItem as TreeViewItem;

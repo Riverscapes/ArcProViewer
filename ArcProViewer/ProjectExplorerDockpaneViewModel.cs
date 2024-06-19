@@ -101,6 +101,7 @@ namespace ArcProViewer
             newProject.Name = pevm.GetUniqueProjectName(newProject);
 
             TreeViewItemModel projectItem = new TreeViewItemModel(newProject, null);
+            projectItem.IsExpanded = true;
             try
             {
                 newProject.BuildProjectTree(projectItem, cmsProject);

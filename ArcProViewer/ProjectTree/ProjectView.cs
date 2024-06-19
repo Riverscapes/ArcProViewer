@@ -9,7 +9,7 @@ namespace ArcProViewer.ProjectTree
         public string Name { get; }
         public readonly bool IsDefaultView;
         public readonly List<ProjectViewLayer> Layers;
-        public string ImagePath => "viewer16.png";
+        public string ImagePath => "view16.png";
 
         public ProjectView(string id, string name, bool is_default)
         {

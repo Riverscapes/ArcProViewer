@@ -18,12 +18,20 @@
     <None Remove="Images\collapse16.png" />
     <None Remove="Images\collapse32.png" />
     <None Remove="Images\description32.png" />
+    <None Remove="Images\draft16.png" />
     <None Remove="Images\draft32.png" />
     <None Remove="Images\expand32.png" />
     <None Remove="Images\folder16.png" />
     <None Remove="Images\folder32.png" />
     <None Remove="Images\help16.png" />
     <None Remove="Images\help32.png" />
+    <None Remove="Images\Layers\Dot16.png" />
+    <None Remove="Images\Layers\draft32.png" />
+    <None Remove="Images\Layers\Multidot16.png" />
+    <None Remove="Images\Layers\Polygon16.png" />
+    <None Remove="Images\Layers\Polyline16.png" />
+    <None Remove="Images\Layers\Raster16.png" />
+    <None Remove="Images\Layers\satellite16.png" />
     <None Remove="Images\mActionEditCopy.png" />
     <None Remove="Images\metadata.png" />
     <None Remove="Images\open32.png" />
@@ -33,6 +41,7 @@
     <None Remove="Images\settings32.png" />
     <None Remove="Images\summarize32.png" />
     <None Remove="Images\upload_project32.png" />
+    <None Remove="Images\view16.png" />
     <None Remove="Images\view32.png" />
     <None Remove="Images\viewer16.png" />
     <None Remove="Images\viewer256.png" />
@@ -55,7 +64,8 @@
     <Content Include="Images\description32.png" />
     <Content Include="Images\draft32.png" />
     <Content Include="Images\expand32.png" />
-    <Content Include="Images\folder16.png" />
+    <Resource Include="Images\Layers\draft16.png" />
+    <Resource Include="Images\folder16.png" />
     <Content Include="Images\folder32.png" />
     <Content Include="Images\help16.png" />
     <Content Include="Images\help32.png" />
@@ -68,6 +78,14 @@
     <Content Include="Images\summarize32.png" />
     <Content Include="Images\upload_project32.png" />
     <Content Include="Images\view32.png" />
+    <Resource Include="Images\Layers\Dot16.png" />
+    <Resource Include="Images\Layers\draft32.png" />
+    <Resource Include="Images\Layers\Multidot16.png" />
+    <Resource Include="Images\Layers\polygon16.png" />
+    <Resource Include="Images\Layers\Polyline16.png" />
+    <Resource Include="Images\Layers\raster16.png" />
+    <Resource Include="Images\Layers\satellite16.png" />
+    <Resource Include="Images\view16.png" />
     <Resource Include="Images\viewer16.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
@@ -177,9 +195,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Images\Layers\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />

@@ -234,7 +234,7 @@ namespace ArcProViewer.ProjectTree
             // Loop over all child nodes of the business logic XML and load them to the tree
             nodBLRoot.ChildNodes.OfType<XmlNode>().ToList().ForEach(x => LoadTreeNode(treProject, projectXMLRoot, x));
 
-            LoadProjectViews(treProject, nodBLRoot);
+            LoadProjectViews(treProject, nodBLRoot.ParentNode);
 
             // Expand the project tree node now that all the items have been added
             //ExpandAll(tnProject);
@@ -283,7 +283,7 @@ namespace ArcProViewer.ProjectTree
 
         private ITreeItem LoadProjectViews(TreeViewItemModel tnProject, XmlNode xmlBusiness)
         {
-            XmlNode nodViews = xmlBusiness.SelectSingleNode("Project/Views");
+            XmlNode nodViews = xmlBusiness.SelectSingleNode("Views");
             if (nodViews == null)
                 return null;
 
@@ -339,7 +339,7 @@ namespace ArcProViewer.ProjectTree
                     if (tnViews == null)
                     {
                         var grpLayer = new GroupLayer("Project Views", true, string.Empty);
-                        tnProject.AddChild(grpLayer);
+                        tnViews = tnProject.AddChild(grpLayer);
                     }
 
                     tnViews.AddChild(view);
@@ -360,12 +360,15 @@ namespace ArcProViewer.ProjectTree
                 return tnNode;
 
             // Recursively check its children
-            foreach (TreeViewItemModel child in tnNode.Children)
+            if (tnNode.Children != null)
             {
-                TreeViewItemModel match = FindTreeNodeById(child, id);
-                if (match is TreeViewItemModel)
+                foreach (TreeViewItemModel child in tnNode.Children)
                 {
-                    return match;
+                    TreeViewItemModel match = FindTreeNodeById(child, id);
+                    if (match is TreeViewItemModel)
+                    {
+                        return match;
+                    }
                 }
             }
 
@@ -583,7 +586,7 @@ namespace ArcProViewer.ProjectTree
                 case "file":
                 case "report":
                     {
-                        dataset = new FileSystemDataset(this, label, new FileInfo(absPath), "viewer16", "viewer16", id);
+                        dataset = new FileSystemDataset(this, label, new FileInfo(absPath), "draft16.png", "draft16.png", id);
                         break;
                     }
 

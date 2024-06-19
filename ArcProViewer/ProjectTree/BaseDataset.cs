@@ -26,7 +26,7 @@ namespace ArcProViewer.ProjectTree
         private readonly string ImageFileNameExists;
         private readonly string ImageFileNameMissing;
 
-        public string ImagePath => ImageFileName;
+        public string ImagePath => System.IO.Path.Combine("Layers", ImageFileName);
 
         public abstract bool Exists { get; }
 

@@ -9,7 +9,7 @@ namespace ArcProViewer.ProjectTree
         public readonly string DefinitionQuery;
 
         public Vector(RaveProject project, string name, string path, string symbology, short transparency, string id, Dictionary<string, string> metadata, string def_query)
-            : base(project, name, new FileInfo(path), symbology, transparency, "vector16", "vector16", id, metadata)
+            : base(project, name, new FileInfo(path), symbology, transparency, "polygon16.png", "polygon16.png", id, metadata)
         {
             DefinitionQuery = def_query;
         }

@@ -11,10 +11,11 @@ namespace ArcProViewer.ProjectTree
         public readonly ITreeItem Item;
         public readonly TreeViewItemModel Parent;
         public string Name => Item.Name;
-        public string ImagePath => Item.ImagePath;
+        public string ImagePath => System.IO.Path.Combine("Images", Item.ImagePath);
 
         public ObservableCollection<TreeViewItemModel> Children { get; set; }
 
+        public bool IsExpanded { get; set; }
 
         public TreeViewItemModel(ITreeItem item, TreeViewItemModel parent)
         {
@@ -30,6 +31,12 @@ namespace ArcProViewer.ProjectTree
                 Children = new ObservableCollection<TreeViewItemModel>();
 
             TreeViewItemModel newItem = new TreeViewItemModel(item, this);
+
+            if (item is GroupLayer)
+            {
+                newItem.IsExpanded = !((GroupLayer)item).Collapse;
+            }
+
             Children.Add(newItem);
             return newItem;
         }

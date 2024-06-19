@@ -5,8 +5,6 @@ using System.Xml;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Controls;
-using System.Windows;
-using ArcGIS.Desktop.Core;
 
 namespace ArcProViewer.ProjectTree
 {
@@ -235,36 +233,6 @@ namespace ArcProViewer.ProjectTree
             nodBLRoot.ChildNodes.OfType<XmlNode>().ToList().ForEach(x => LoadTreeNode(treProject, projectXMLRoot, x));
 
             LoadProjectViews(treProject, nodBLRoot.ParentNode);
-
-            // Expand the project tree node now that all the items have been added
-            //ExpandAll(tnProject);
-
-            //tnProject.IsExpanded = true;
-            //tnProject.UpdateLayout();
-
-            //// Loop over all tree nodes and collapse any group layers.
-            //// This has to be done last once all the nodes have their children
-            //List<TreeViewItem> allNodes = new List<TreeViewItem>();
-            //foreach (TreeViewItem node in tnProject.Items)
-            //    TreeViewItemModel.GetAllNodes(allNodes, node);
-            //allNodes.Where(x => x.Tag is GroupLayer && ((GroupLayer)x.Tag).Collapse).ToList().ForEach(x => x.IsExpanded = false);
-
-            //return tnProject;
-
-
-
-            //return LoadTree(tnProject, businessLogicPath);
-
-            //// If nothing returned then something went wrong. Remove the temporary node.
-            //if (tnResult == null)
-            //{
-            //    ((TreeViewItem)tnProject.Parent).Items.Remove(tnProject);
-
-            //    MessageBox.Show(string.Format("Failed to load project because there is no valid business logic XML file for projects of type '{0}'.", ProjectType)
-            //        + "\n\nEnsure that you have updated the RAVE resource files using the tool under the Help menu on the RAVE toolbar."
-
-            //        , "Missing Business Logic XML File", MessageBoxButton.OK, MessageBoxImage.Information);
-            //}
         }
 
         private static void ExpandAll(TreeViewItem item)
@@ -670,20 +638,5 @@ namespace ArcProViewer.ProjectTree
             return string.Empty;
         }
 
-        //private TreeViewItemModel CreateTreeViewItem(string text, string imageFileName, object tag)
-        //{
-        //    TreeViewItemModel treeViewItem = new TreeViewItemModel(text, imageFileName, tag);
-
-        //    if (!string.IsNullOrEmpty(imageFileName))
-        //    {
-        //        //Image image = new Image();
-        //        //BitmapImage bitmapImage = new BitmapImage(new Uri(string.Format("pack://application:,,,/{0}.png", imageFileName)));
-        //        //image.Source = bitmapImage;
-        //        //image.Width = 16;
-        //        //image.Height = 16;
-        //    }
-
-        //    return treeViewItem;
-        //}
     }
 }

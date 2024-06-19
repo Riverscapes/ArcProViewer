@@ -21,9 +21,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 
 namespace ArcProViewer
@@ -41,10 +38,6 @@ namespace ArcProViewer
                 SetProperty(ref treeViewItems, value);
             }
         }
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
 
         public ProjectExplorerDockpaneViewModel()
         {
@@ -140,36 +133,6 @@ namespace ArcProViewer
             //TODO
             //AssignContextMenus(tnProject);
         }
-
-        //int test = content.treProject.Items.Count;
-        //int test2 = pevm.TreeViewItems.Count;
-
-        //content.LoadProject(filePath);
-
-
-        //internal void LoadProject2(string filePath)
-        //{
-        //    TreeViewItems = new ObservableCollection<TreeViewItemModel>();
-
-        //    TreeViewItemModel item = new TreeViewItemModel();
-        //    item.Header = "test";
-        //    item.ImagePath = "Images/viewer16.png";
-        //    item.Children = new ObservableCollection<TreeViewItemModel>
-        //    {
-        //       new TreeViewItemModel
-        //        {
-        //            Header = "Item 2",
-        //            ImagePath = "Images/viewer16.png",
-        //            Children = new ObservableCollection<TreeViewItemModel>
-        //            {
-        //                new TreeViewItemModel { Header = "SubItem 2.1", ImagePath = "Images/viewer16.png" }
-        //            }
-        //        }
-        //    };
-        //    TreeViewItems.Add(item);
-
-        //    OnPropertyChanged(nameof(TreeViewItems));
-        //}
 
         /// <summary>
         /// Get a unique name for a project suitable for use in project tree

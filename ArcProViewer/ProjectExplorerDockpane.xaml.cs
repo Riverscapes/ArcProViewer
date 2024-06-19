@@ -3,17 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 
 namespace ArcProViewer
@@ -57,23 +49,6 @@ namespace ArcProViewer
                 }
             }
         }
-
-        //private void treProject_AfterLoad(object sender, EventArgs e)
-        //{
-        //    foreach (TreeViewItem item in treProject.Items)
-        //        SetGroupsExpanded(item);
-        //}
-
-        //private void SetGroupsExpanded(TreeViewItem item)
-        //{
-
-        //   item.
-
-
-        //    foreach (TreeViewItem item in treProject.Items)
-        //        SetGroupsExpanded(item);
-
-        //}
 
         public async Task OnAddGISToMap(object sender, EventArgs e)
         {
@@ -125,55 +100,6 @@ namespace ArcProViewer
                 treProject.Items.Remove(Parent);
             }
         }
-
-
-
-        //public void LoadProject(string projectFile)
-        //{
-        //    // Detect if project is already in tree and simply select the node and return;
-        //    foreach (TreeViewItem rootNod in treProject.Items)
-        //    {
-        //        if (rootNod.Tag is RaveProject && RaveProject.IsSame((RaveProject)rootNod.Tag, projectFile))
-        //        {
-        //            rootNod.IsSelected = true;
-        //            rootNod.Focus();
-        //            return;
-        //        }
-        //    }
-
-        //    // TODO: temp variable to get it compiling. Recode context menus
-        //    ContextMenu cmsProject = null;
-
-        //    RaveProject newProject = new RaveProject(projectFile);
-        //    TreeViewItem tnProject = newProject.LoadNewProject(treProject, cmsProject);
-        //    tnProject.Header = GetUniqueProjectName(newProject, tnProject.Header.ToString());
-
-        //    // Load default project view
-        //    if (Properties.Settings.Default.LoadDefaultProjectView)
-        //    {
-        //        try
-        //        {
-        //            // Find the default project view among all the tree nodes
-        //            List<TreeViewItem> allNodes = new List<TreeViewItem>();
-        //            foreach (TreeViewItem node in tnProject.Items)
-        //                RaveProject.GetAllNodes(allNodes, node);
-
-        //            TreeViewItem nodDefault = allNodes.FirstOrDefault(x => x.Tag is ProjectTree.ProjectView && ((ProjectTree.ProjectView)x.Tag).IsDefaultView);
-        //            if (nodDefault is TreeViewItem)
-        //            {
-        //                AddChildrenToMap(nodDefault);
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            // Loading the default project view is optional. Do nothing in production
-        //            System.Diagnostics.Debug.Assert(false, ex.Message);
-        //        }
-        //    }
-
-        //    //TODO
-        //    //AssignContextMenus(tnProject);
-        //}
 
         private void AddChildrenToMap(TreeViewItemModel e)
         {

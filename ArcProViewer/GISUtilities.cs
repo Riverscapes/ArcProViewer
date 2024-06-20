@@ -41,6 +41,13 @@ namespace ArcProViewer
                 {
                     layer = LayerFactory.Instance.CreateLayer(dataset.GISUri, parent as ILayerContainerEdit);
                     layer.SetName(item.Name);
+
+                    if (item.Item is Vector && layer is FeatureLayer)
+                    {
+                        Vector vector = (Vector)item.Item;
+                        if (!string.IsNullOrEmpty(vector.DefinitionQuery))
+                            ((FeatureLayer)layer).SetDefinitionQuery(vector.DefinitionQuery);
+                    }
                 }
 
                 if (layer == null)

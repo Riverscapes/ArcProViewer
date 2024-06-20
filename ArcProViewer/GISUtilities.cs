@@ -10,23 +10,42 @@ using ArcProViewer.ProjectTree;
 using ArcGIS.Core.Data;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
 using System.Threading.Tasks;
+using ArcGIS.Desktop.Internal.Mapping.Controls.QueryBuilder.SqlEditor;
+using ArcGIS.Core.Data.UtilityNetwork.Trace;
+
 
 namespace ArcProViewer
 {
     public struct GISUtilities
     {
-        public static async Task AddToMapAsync(GISDataset dataset, string sLayerName, ArcGIS.Desktop.Mapping.GroupLayer grpLayer)
+        public enum NodeInsertModes
+        {
+            Add,
+            Insert
+        };
+
+        public static async Task AddToMapAsync(TreeViewItemModel item)
         {
             await QueuedTask.Run(() =>
             {
+                ILayerContainer parent = BuildArcMapGroupLayers(item, NodeInsertModes.Insert);
+
+                GISDataset dataset = item.Item as GISDataset;
+
                 // Check if the layer file exists
                 if (!dataset.Exists)
                     throw new FileNotFoundException("The dataset workspace file does not exist.", dataset.Path.FullName);
 
-                // Create a new layer from the layer file
-                var layer = LayerFactory.Instance.CreateLayer(dataset.GISUri, MapView.Active.Map);
+                Layer layer = parent.FindLayer(dataset.GISUri.ToString(), false);
+                if (layer == null)
+                {
+                    layer = LayerFactory.Instance.CreateLayer(dataset.GISUri, parent as ILayerContainerEdit);
+                    layer.SetName(item.Name);
+                }
+
                 if (layer == null)
                     throw new InvalidOperationException("Failed to create layer from the layer file.");
+
 
                 //// Get the current map
                 //var map = MapView.Active.Map;
@@ -35,6 +54,47 @@ namespace ArcProViewer
                 //map.Layers.Append(layer);
             });
         }
+
+        public static Task<ArcGIS.Desktop.Mapping.GroupLayer> GetGroupLayer(string groupName, ILayerContainer parent)
+        {
+            return QueuedTask.Run(() =>
+            {
+                if (parent == null)
+                    parent = MapView.Active.Map;
+
+                return parent.Layers.OfType<ArcGIS.Desktop.Mapping.GroupLayer>().FirstOrDefault(gl => gl.Name.Equals(groupName, StringComparison.OrdinalIgnoreCase));
+
+            });
+        }
+
+        public static Task<ArcGIS.Desktop.Mapping.GroupLayer> AddGroupLayer(string groupName, int index, ILayerContainerEdit parent)
+        {
+            return QueuedTask.Run(async () =>
+            {
+                ArcGIS.Desktop.Mapping.GroupLayer result = await GetGroupLayer(groupName, parent);
+                if (result != null)
+                    return result;
+
+                if (parent == null)
+                    parent = MapView.Active.Map;
+
+                ArcGIS.Desktop.Mapping.GroupLayer grpLayer = LayerFactory.Instance.CreateGroupLayer(parent, index, groupName);
+                grpLayer.SetExpanded(true);
+                return grpLayer;
+            });
+        }
+
+        public static ILayerContainer BuildArcMapGroupLayers(TreeViewItemModel node, GISUtilities.NodeInsertModes topLevelMode = GISUtilities.NodeInsertModes.Insert)
+        {
+            ILayerContainer parent = node.Parent == null ? MapView.Active.Map : BuildArcMapGroupLayers(node.Parent, topLevelMode);
+
+            if (node.Item is BaseDataset)
+                return parent;
+            else
+                return GISUtilities.AddGroupLayer(node.Item.Name, 0, parent as ILayerContainerEdit).Result;
+        }
+
+
 
         //public static async Task LoadLayerWithSymbologyAsync(string layerPath, string layerFilePath)
         //{

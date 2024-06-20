@@ -24,25 +24,26 @@ namespace ArcProViewer
 
         private void treProject_DoubleClick(object sender, EventArgs e)
         {
-            if (treProject.SelectedItem is TreeViewItem)
+            if (treProject.SelectedItem is TreeViewItemModel)
             {
-                TreeViewItem selNode = treProject.SelectedItem as TreeViewItem;
-                if (selNode.Tag is GISDataset)
+
+                TreeViewItemModel selNode = treProject.SelectedItem as TreeViewItemModel;
+                if (selNode.Item is GISDataset)
                 {
                     // TODO: GIS
                     OnAddGISToMap(sender, e);
                 }
-                else if (selNode.Tag is FileSystemDataset)
+                else if (selNode.Item is FileSystemDataset)
                 {
                     //TODO: GIS
                     //OnOpenFile(sender, e);
                 }
-                else if (selNode.Tag is ProjectView)
+                else if (selNode.Item is ProjectView)
                 {
                     // TODO: GIS
                     //OnAddChildrenToMap(sender, e);
                 }
-                else if (selNode.Tag is WMSLayer)
+                else if (selNode.Item is WMSLayer)
                 {
                     // TODO: GIS
                     //OnAddWMSToMap(sender, e);
@@ -52,8 +53,8 @@ namespace ArcProViewer
 
         public async Task OnAddGISToMap(object sender, EventArgs e)
         {
-            TreeViewItem selNode = treProject.SelectedItem as TreeViewItem;
-            GISDataset layer = (GISDataset)selNode.Tag;
+            TreeViewItemModel selNode = treProject.SelectedItem as TreeViewItemModel;
+            GISDataset layer = (GISDataset)selNode.Item;
 
             // TODO: GIS
             //IGroupLayer parentGrpLyr = BuildArcMapGroupLayers(selNode);
@@ -63,7 +64,7 @@ namespace ArcProViewer
 
             try
             {
-                await GISUtilities.AddToMapAsync(layer, layer.Name, null);
+                await GISUtilities.AddToMapAsync(selNode);
                 //GISUtilities.AddToMap(layer, layer.Name, parentGrpLyr, GetPrecedingLayers(selNode), symbology, transparency: layer.Transparency, definition_query: def_query);
             }
             catch (Exception ex)

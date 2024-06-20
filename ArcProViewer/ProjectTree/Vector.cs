@@ -24,7 +24,7 @@ namespace ArcProViewer.ProjectTree
                         string[] parts = this.GISPath.Split("\\");
                         string path = this.GISPath.Substring(0, this.GISPath.IndexOf(".gpkg") + 5);
                         //return new Uri( string.Format("geopackage:///{0}?layer={1}",path , parts[parts.Length-1]));
-                        return new Uri(string.Format("{0}|layername={1}", path, parts[parts.Length-1]));
+                        return new Uri(string.Format("{0}\\main.{1}", path, parts[parts.Length-1]));
 
                     default:
                         return new Uri(GISPath);

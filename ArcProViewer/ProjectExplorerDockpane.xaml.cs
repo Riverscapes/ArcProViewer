@@ -28,7 +28,7 @@ namespace ArcProViewer
             {
 
                 TreeViewItemModel selNode = treProject.SelectedItem as TreeViewItemModel;
-                if (selNode.Item is GISDataset)
+                if (selNode.Item is IGISLayer)
                 {
                     // TODO: GIS
                     OnAddGISToMap(sender, e);
@@ -43,24 +43,21 @@ namespace ArcProViewer
                     // TODO: GIS
                     //OnAddChildrenToMap(sender, e);
                 }
-                else if (selNode.Item is WMSLayer)
-                {
-                    // TODO: GIS
-                    //OnAddWMSToMap(sender, e);
-                }
             }
         }
 
         public async Task OnAddGISToMap(object sender, EventArgs e)
         {
             TreeViewItemModel selNode = treProject.SelectedItem as TreeViewItemModel;
-            GISDataset layer = (GISDataset)selNode.Item;
 
             // TODO: GIS
             //IGroupLayer parentGrpLyr = BuildArcMapGroupLayers(selNode);
             //FileInfo symbology = GetSymbology(layer);
 
-            string def_query = layer is ProjectTree.Vector ? ((ProjectTree.Vector)layer).DefinitionQuery : string.Empty;
+            string def_query = string.Empty;
+
+            if (selNode.Item is ProjectTree.Vector)
+                def_query = ((ProjectTree.Vector)selNode.Item).DefinitionQuery;
 
             try
             {
@@ -69,7 +66,7 @@ namespace ArcProViewer
             }
             catch (Exception ex)
             {
-                MessageBox.Show(string.Format("{0}\n\n{1}", ex.Message, layer.Path.FullName), "Error Adding Dataset To Map", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                MessageBox.Show(string.Format("{0}\n\n{1}", ex.Message, ((IGISLayer) selNode.Item).GISPath), "Error Adding Dataset To Map", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
             finally
             {

@@ -141,7 +141,7 @@ namespace ArcProViewer
             try
             {
                 newProject.BuildProjectTree(projectItem, cmsProject);
-                pevm.treeViewItems.Add(projectItem);
+                pevm.treeViewItems.Insert(0, projectItem);
             }
             catch (Exception ex)
             {
@@ -218,7 +218,7 @@ namespace ArcProViewer
 
         private void AddLayerToMap(TreeViewItemModel node, bool recursive)
         {
-            if (node.Item is GISDataset)
+            if (node.Item is IGISLayer)
                 GISUtilities.AddToMapAsync(node);
 
             if (recursive && node.Children != null && node.Children.Count > 0)

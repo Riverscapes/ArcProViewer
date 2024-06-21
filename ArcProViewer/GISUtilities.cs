@@ -30,16 +30,21 @@ namespace ArcProViewer
             {
                 ILayerContainer parent = BuildArcMapGroupLayers(item, NodeInsertModes.Insert);
 
-                GISDataset dataset = item.Item as GISDataset;
+                Uri uri = null;
+                if (item.Item is GISDataset)
+                {
+                    GISDataset dataset  = item.Item as GISDataset;
+                    uri = dataset.GISUri;
+                    if (!dataset.Exists)
+                        throw new FileNotFoundException("The dataset workspace file does not exist.", dataset.Path.FullName);
+                }
+                else if (item.Item is ProjectTree.WMSLayer)
+                    uri = ((ProjectTree.WMSLayer)item.Item).URL;
 
-                // Check if the layer file exists
-                if (!dataset.Exists)
-                    throw new FileNotFoundException("The dataset workspace file does not exist.", dataset.Path.FullName);
-
-                Layer layer = parent.FindLayer(dataset.GISUri.ToString(), false);
+                Layer layer = parent.FindLayer(uri.ToString(), false);
                 if (layer == null)
                 {
-                    layer = LayerFactory.Instance.CreateLayer(dataset.GISUri, parent as ILayerContainerEdit);
+                    layer = LayerFactory.Instance.CreateLayer(uri, parent as ILayerContainerEdit);
                     layer.SetName(item.Name);
 
                     if (item.Item is Vector && layer is FeatureLayer)
@@ -52,13 +57,6 @@ namespace ArcProViewer
 
                 if (layer == null)
                     throw new InvalidOperationException("Failed to create layer from the layer file.");
-
-
-                //// Get the current map
-                //var map = MapView.Active.Map;
-
-                //// Add the layer to the map
-                //map.Layers.Append(layer);
             });
         }
 

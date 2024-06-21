@@ -25,12 +25,25 @@ using System.Linq;
 using System.Reflection.Metadata;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Xml;
 
 namespace ArcProViewer
 {
     internal class ProjectExplorerDockpaneViewModel : DockPane, INotifyPropertyChanged
     {
         private const string _dockPaneID = "ArcProViewer_ProjectExplorerDockpane";
+
+        /// <summary>
+        /// User's RAVE AppData Folder
+        /// </summary>
+        /// <remarks>
+        /// C:\Users\USERNAME\AppData\Roaming\RAVE</remarks>
+        public static DirectoryInfo AppDataFolder { get { return new DirectoryInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Properties.Resources.AppDataFolder)); } }
+
+        /// <summary>
+        /// Software deployment folder
+        /// </summary>
+        public static DirectoryInfo DeployFolder { get { return new DirectoryInfo(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "RiverscapesXML")); } }
 
         public ICommand AddToMap { get; }
         public ICommand LayerMetaData { get; }
@@ -65,6 +78,15 @@ namespace ArcProViewer
             Refresh = new ContextMenuCommand(ExecuteRefresh, CanExecuteRefresh);
             Close = new ContextMenuCommand(ExecuteClose, CanExecuteClose);
             AddViewToMap = new ContextMenuCommand(ExecuteAddViewToMap, CanExecuteAddViewToMap);
+
+            try
+            {
+                RefreshBaseMaps();
+            }
+            catch
+            {
+                Console.WriteLine("Failed to load Basemaps");
+            }
         }
 
         /// <summary>
@@ -88,7 +110,6 @@ namespace ArcProViewer
             get => _heading;
             set => SetProperty(ref _heading, value);
         }
-        public static DirectoryInfo AppDataFolder { get { return new DirectoryInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Properties.Resources.AppDataFolder)); } }
 
         internal static void LoadProject(string filePath)
         {
@@ -98,7 +119,6 @@ namespace ArcProViewer
 
             ProjectExplorerDockpaneViewModel pevm = (ProjectExplorerDockpaneViewModel)pane;
             //ProjectExplorerDockpaneView content = pevm.Content as ProjectExplorerDockpaneView;
-
 
             // Detect if project is already in tree and simply select the node and return;
             foreach (TreeViewItemModel rootNod in pevm.TreeViewItems)
@@ -152,9 +172,6 @@ namespace ArcProViewer
                     System.Diagnostics.Debug.Assert(false, ex.Message);
                 }
             }
-
-            //TODO
-            //AssignContextMenus(tnProject);
         }
 
         public static void CloseAllProjects()
@@ -423,6 +440,94 @@ namespace ArcProViewer
             return parameter is TreeViewItemModel && ((TreeViewItemModel)parameter).Item is ProjectView;
         }
 
+        #endregion
+
+        #region Basemaps
+
+        public void RefreshBaseMaps()
+        {
+            // Remove existing Basemap group
+            TreeViewItemModel bGroup = TreeViewItems.FirstOrDefault(x => x.Item is BasemapGroup);
+            if (bGroup != null)
+                TreeViewItems.Remove(bGroup);
+
+            // Exit if no base maps are required
+            if (!Properties.Settings.Default.LoadBaseMaps || string.IsNullOrEmpty(Properties.Settings.Default.BaseMap))
+                return;
+
+            List<string> searchFolders = new List<string>() {
+                AppDataFolder.FullName,
+                DeployFolder.FullName,
+            };
+
+            foreach (string folder in searchFolders)
+            {
+                string baseMapPath = Path.Combine(folder, "BaseMaps.xml");
+                if (File.Exists(baseMapPath))
+                {
+                    try
+                    {
+                        XmlDocument xmlDoc = new XmlDocument();
+                        xmlDoc.Load(baseMapPath);
+                        XmlNode nodRegion = xmlDoc.SelectSingleNode(string.Format("BaseMaps/Region[@name='{0}']", Properties.Settings.Default.BaseMap));
+                        if (nodRegion is XmlNode)
+                        {
+                            var group = new BasemapGroup();
+                            TreeViewItemModel newGroup = new TreeViewItemModel(group, null);
+                            TreeViewItems.Add(newGroup);
+
+                            LoadBaseMapsFromXML(newGroup, nodRegion);
+                            return;
+                        }
+                    }
+                    catch
+                    {
+                        // Do nothing. Proceed to next base map file
+                    }
+                }
+            }
+        }
+
+        private void LoadBaseMapsFromXML(TreeViewItemModel nodParent, XmlNode nodXML)
+        {
+            foreach (XmlNode node in nodXML.ChildNodes)
+            {
+                try
+                {
+                    if (string.Compare(node.Name, "GroupLayer", true) == 0)
+                    {
+                        var group = new ProjectTree.GroupLayer(node.Attributes["name"].InnerText, true, "");
+                        TreeViewItemModel groupNode = new TreeViewItemModel(group, nodParent);
+                        if (nodParent.Children == null)
+                            nodParent.Children = new ObservableCollection<TreeViewItemModel>();
+                        nodParent.Children.Add(groupNode);
+
+                        LoadBaseMapsFromXML(groupNode, node);
+                    }
+                    else if (string.Compare(node.Name, "Layer", true) == 0)
+                    {
+                        // Skip all but WMS layers
+                        XmlAttribute attType = node.Attributes["type"];
+                        if (attType is XmlAttribute && !string.IsNullOrEmpty(attType.InnerText))
+                        {
+                            if (string.Compare("wms", attType.InnerText, true) != 0)
+                                continue;
+                        }
+
+                        if (nodParent.Children == null)
+                            nodParent.Children = new ObservableCollection<TreeViewItemModel>();
+
+                        var layer = new ProjectTree.WMSLayer(node.Attributes["name"].InnerText, node.Attributes["url"].InnerText, 0, string.Empty);
+                        TreeViewItemModel newNode = new TreeViewItemModel(layer, nodParent);
+                        nodParent.Children.Add(newNode);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Do nothing. Proceed to next XML node
+                }
+            }
+        }
         #endregion
     }
 }

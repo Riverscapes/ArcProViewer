@@ -132,6 +132,9 @@
   <data name="ApplicationNameShort" xml:space="preserve">
     <value>Riverscapes Viewer</value>
   </data>
+  <data name="BasemapsLabel" xml:space="preserve">
+    <value>Basemaps</value>
+  </data>
   <data name="BusinessLogicXMLFolder" xml:space="preserve">
     <value>RaveBusinessLogic</value>
   </data>

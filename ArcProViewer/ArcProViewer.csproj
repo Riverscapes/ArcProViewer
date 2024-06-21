@@ -13,6 +13,7 @@
     <None Remove="Images\add32.png" />
     <None Remove="Images\add_to_map16.png" />
     <None Remove="Images\add_to_map32.png" />
+    <None Remove="Images\basemap16.png" />
     <None Remove="Images\close16.png" />
     <None Remove="Images\close32.png" />
     <None Remove="Images\collapse16.png" />
@@ -61,6 +62,7 @@
     <Content Include="DarkImages\AddInDesktop32.png" />
     <Resource Include="Images\add_to_map16.png" />
     <Content Include="Images\add_to_map32.png" />
+    <Resource Include="Images\basemap16.png" />
     <Resource Include="Images\close16.png" />
     <Content Include="Images\close32.png" />
     <Content Include="Images\collapse16.png" />

@@ -192,8 +192,17 @@
                 </MenuItem>
             </ContextMenu>
             <ContextMenu x:Key="WMSContextMenu">
-                <MenuItem Command="{Binding DataContext.ActionACommand, RelativeSource={RelativeSource AncestorType=TreeView}}" Header="WMS A" />
-                <MenuItem Command="{Binding DataContext.ActionBCommand, RelativeSource={RelativeSource AncestorType=TreeView}}" Header="WMS B" />
+                <MenuItem
+                    Command="{Binding DataContext.AddToMap, RelativeSource={RelativeSource AncestorType=TreeView}}"
+                    CommandParameter="{Binding}"
+                    Header="Add To Map">
+                    <MenuItem.Icon>
+                        <Image
+                            Width="16"
+                            Height="16"
+                            Source="pack://application:,,,/ArcProViewer;component/Images/add_to_map16.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
             </ContextMenu>
             <ContextMenu x:Key="ProjectViewContextMenu">
                 <MenuItem

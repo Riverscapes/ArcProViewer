@@ -106,6 +106,15 @@ namespace ArcProViewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Basemaps.
+        /// </summary>
+        internal static string BasemapsLabel {
+            get {
+                return ResourceManager.GetString("BasemapsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to RaveBusinessLogic.
         /// </summary>
         internal static string BusinessLogicXMLFolder {

@@ -9,7 +9,7 @@ namespace ArcProViewer.ProjectTree
     /// <summary>
     /// Both projects and layers can have MetaData
     /// </summary>
-    interface IMetadata
+    public interface IMetadata
     {
         public Dictionary<string, string> Metadata { get; }
     }

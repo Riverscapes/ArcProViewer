@@ -226,7 +226,20 @@ namespace ArcProViewer
 
         private void ExecuteLayerMetaData(object parameter)
         {
-            throw new NotImplementedException();
+            if (parameter is TreeViewItemModel)
+            {
+                TreeViewItemModel node = (TreeViewItemModel)parameter;
+                if (node.Item is ProjectTree.IMetadata)
+                {
+                    ProjectTree.IMetadata metadata = (ProjectTree.IMetadata)node.Item;
+                    var metadataWindow = new MetadataWindow(node.Item is RaveProject);
+                    MetadataViewModel model = metadataWindow.DataContext as MetadataViewModel;
+                    foreach (KeyValuePair<string, string> item in metadata.Metadata)
+                        model.Items.Add(item);
+
+                    metadataWindow.ShowDialog();
+                }
+            }
         }
 
         private bool CanExecuteLayerMetaData(object parameter)

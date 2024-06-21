@@ -46,6 +46,7 @@
     <None Remove="Images\upload_project32.png" />
     <None Remove="Images\view16.png" />
     <None Remove="Images\view32.png" />
+    <None Remove="Images\viewer.ico" />
     <None Remove="Images\viewer16.png" />
     <None Remove="Images\viewer256.png" />
     <None Remove="Images\viewer32.png" />
@@ -93,6 +94,7 @@
     <Resource Include="Images\open16.png" />
     <Resource Include="Images\refresh16.png" />
     <Resource Include="Images\view16.png" />
+    <Resource Include="Images\viewer.ico" />
     <Resource Include="Images\viewer16.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>

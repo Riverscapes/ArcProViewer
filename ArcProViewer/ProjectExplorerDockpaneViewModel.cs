@@ -157,6 +157,17 @@ namespace ArcProViewer
             //AssignContextMenus(tnProject);
         }
 
+        public static void CloseAllProjects()
+        {
+            DockPane pane = FrameworkApplication.DockPaneManager.Find(_dockPaneID);
+            if (pane == null)
+                return;
+
+            ProjectExplorerDockpaneViewModel pevm = (ProjectExplorerDockpaneViewModel)pane;
+            var deleteList = pevm.treeViewItems.Where(x => x.Item is RaveProject).ToList();
+            deleteList.ForEach(x => pevm.ExecuteClose(x));
+        }
+
         /// <summary>
         /// Get a unique name for a project suitable for use in project tree
         /// </summary>

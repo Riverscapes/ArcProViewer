@@ -30,6 +30,15 @@ namespace ArcProViewer.Buttons
     {
         protected override void OnClick()
         {
+
+            try
+            {
+                ProjectExplorerDockpaneViewModel.CloseAllProjects();
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
     }
 }

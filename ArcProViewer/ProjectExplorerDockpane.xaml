@@ -39,7 +39,6 @@
                             Source="pack://application:,,,/ArcProViewer;component/Images/metadata16.png" />
                     </MenuItem.Icon>
                 </MenuItem>
-
                 <MenuItem
                     Command="{Binding DataContext.DataExchange, RelativeSource={RelativeSource AncestorType=TreeView}}"
                     CommandParameter="{Binding}"
@@ -89,7 +88,7 @@
                 <MenuItem
                     Command="{Binding DataContext.OpenFile, RelativeSource={RelativeSource AncestorType=TreeView}}"
                     CommandParameter="{Binding}"
-                    Header="View Layer MetaData">
+                    Header="Open File">
                     <MenuItem.Icon>
                         <Image
                             Width="16"
@@ -100,7 +99,7 @@
                 <MenuItem
                     Command="{Binding DataContext.BrowseFolder, RelativeSource={RelativeSource AncestorType=TreeView}}"
                     CommandParameter="{Binding}"
-                    Header="View Layer MetaData">
+                    Header="Browse Folder">
                     <MenuItem.Icon>
                         <Image
                             Width="16"
@@ -148,7 +147,7 @@
                 <MenuItem
                     Command="{Binding DataContext.BrowseFolder, RelativeSource={RelativeSource AncestorType=TreeView}}"
                     CommandParameter="{Binding}"
-                    Header="View Layer MetaData">
+                    Header="Browse Folder">
                     <MenuItem.Icon>
                         <Image
                             Width="16"
@@ -158,16 +157,56 @@
                 </MenuItem>
             </ContextMenu>
             <ContextMenu x:Key="RasterContextMenu">
-                <MenuItem Command="{Binding DataContext.ActionACommand, RelativeSource={RelativeSource AncestorType=TreeView}}" Header="Raster A" />
-                <MenuItem Command="{Binding DataContext.ActionBCommand, RelativeSource={RelativeSource AncestorType=TreeView}}" Header="Raster B" />
+                <MenuItem
+                    Command="{Binding DataContext.AddToMap, RelativeSource={RelativeSource AncestorType=TreeView}}"
+                    CommandParameter="{Binding}"
+                    Header="Add To Map">
+                    <MenuItem.Icon>
+                        <Image
+                            Width="16"
+                            Height="16"
+                            Source="pack://application:,,,/ArcProViewer;component/Images/add_to_map16.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem
+                    Command="{Binding DataContext.LayerMetaData, RelativeSource={RelativeSource AncestorType=TreeView}}"
+                    CommandParameter="{Binding}"
+                    Header="View Layer MetaData">
+                    <MenuItem.Icon>
+                        <Image
+                            Width="16"
+                            Height="16"
+                            Source="pack://application:,,,/ArcProViewer;component/Images/metadata16.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem
+                    Command="{Binding DataContext.BrowseFolder, RelativeSource={RelativeSource AncestorType=TreeView}}"
+                    CommandParameter="{Binding}"
+                    Header="Browse Folder">
+                    <MenuItem.Icon>
+                        <Image
+                            Width="16"
+                            Height="16"
+                            Source="pack://application:,,,/ArcProViewer;component/Images/folder16.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
             </ContextMenu>
             <ContextMenu x:Key="WMSContextMenu">
                 <MenuItem Command="{Binding DataContext.ActionACommand, RelativeSource={RelativeSource AncestorType=TreeView}}" Header="WMS A" />
                 <MenuItem Command="{Binding DataContext.ActionBCommand, RelativeSource={RelativeSource AncestorType=TreeView}}" Header="WMS B" />
             </ContextMenu>
             <ContextMenu x:Key="ProjectViewContextMenu">
-                <MenuItem Command="{Binding DataContext.ActionACommand, RelativeSource={RelativeSource AncestorType=TreeView}}" Header="View A" />
-                <MenuItem Command="{Binding DataContext.ActionBCommand, RelativeSource={RelativeSource AncestorType=TreeView}}" Header="View B" />
+                <MenuItem
+                    Command="{Binding DataContext.AddViewToMap, RelativeSource={RelativeSource AncestorType=TreeView}}"
+                    CommandParameter="{Binding}"
+                    Header="Add All Layers To Map">
+                    <MenuItem.Icon>
+                        <Image
+                            Width="16"
+                            Height="16"
+                            Source="pack://application:,,,/ArcProViewer;component/Images/add_to_map16.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
             </ContextMenu>
         </ResourceDictionary>
     </UserControl.Resources>

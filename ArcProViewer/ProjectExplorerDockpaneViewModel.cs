@@ -36,14 +36,11 @@ namespace ArcProViewer
         public ICommand LayerMetaData { get; }
         public ICommand BrowseFolder { get; }
         public ICommand AddAllLayersToMap { get; }
-
         public ICommand DataExchange { get; }
-
         public ICommand OpenFile { get; }
-
         public ICommand Refresh { get; }
-
         public ICommand Close { get; }
+        public ICommand AddViewToMap { get; }
 
         private ObservableCollection<TreeViewItemModel> treeViewItems;
         public ObservableCollection<TreeViewItemModel> TreeViewItems
@@ -67,6 +64,7 @@ namespace ArcProViewer
             DataExchange = new ContextMenuCommand(ExecuteDataExchange, CanExecuteDataExchange);
             Refresh = new ContextMenuCommand(ExecuteRefresh, CanExecuteRefresh);
             Close = new ContextMenuCommand(ExecuteClose, CanExecuteClose);
+            AddViewToMap = new ContextMenuCommand(ExecuteAddViewToMap, CanExecuteAddViewToMap);
         }
 
         /// <summary>
@@ -295,14 +293,14 @@ namespace ArcProViewer
             {
                 var dataset = (FileSystemDataset)node.Item;
                 if (dataset.Exists)
-                    Process.Start(dataset.Path.FullName);
+                    Process.Start(new ProcessStartInfo(dataset.Path.FullName) { UseShellExecute = true });
             }
         }
 
         private bool CanExecuteOpenFile(object parameter)
         {
             var node = parameter as TreeViewItemModel;
-            if (node!= null && node.Item is FileSystemDataset)
+            if (node != null && node.Item is FileSystemDataset)
             {
                 var dataset = (FileSystemDataset)node.Item;
                 return dataset.Exists;
@@ -314,7 +312,7 @@ namespace ArcProViewer
         private void ExecuteDataExchange(object parameter)
         {
             var node = parameter as TreeViewItemModel;
-            if (node!= null && node.Item is RaveProject)
+            if (node != null && node.Item is RaveProject)
             {
                 var project = (RaveProject)node.Item;
                 if (!string.IsNullOrEmpty(project.WarehouseId))
@@ -337,12 +335,22 @@ namespace ArcProViewer
 
         private void ExecuteRefresh(object parameter)
         {
-
+            if (parameter is TreeViewItemModel)
+            {
+                TreeViewItemModel projectNode = (TreeViewItemModel)parameter;
+                RaveProject project = projectNode.Item as RaveProject;
+                if (project is RaveProject)
+                {
+                    string filePath = project.ProjectFile.FullName;
+                    TreeViewItems.Remove(projectNode);
+                    LoadProject(filePath);
+                }
+            }
         }
 
         private bool CanExecuteRefresh(object parameter)
         {
-            return parameter is TreeViewItemModel;
+            return parameter is TreeViewItemModel && ((TreeViewItemModel)parameter).Item is RaveProject;
         }
 
         private void ExecuteClose(object parameter)
@@ -371,6 +379,24 @@ namespace ArcProViewer
         private bool CanExecuteClose(object parameter)
         {
             return parameter is TreeViewItemModel && ((TreeViewItemModel)parameter).Item is RaveProject;
+        }
+
+        private void ExecuteAddViewToMap(object parameter)
+        {
+            if (parameter is TreeViewItemModel)
+            {
+                TreeViewItemModel projectNode = (TreeViewItemModel)parameter;
+                ProjectView view = projectNode.Item as ProjectView;
+                if (view is ProjectView)
+                {
+                    view.Layers.ForEach(x => AddLayerToMap(x.LayerNode, false));
+                }
+            }
+        }
+
+        private bool CanExecuteAddViewToMap(object parameter)
+        {
+            return parameter is TreeViewItemModel && ((TreeViewItemModel)parameter).Item is ProjectView;
         }
 
         #endregion

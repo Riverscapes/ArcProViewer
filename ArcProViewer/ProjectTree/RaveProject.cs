@@ -162,18 +162,18 @@ namespace ArcProViewer.ProjectTree
 
         public Dictionary<string, string> GetMetdata(XmlDocument xmlDoc)
         {
-            XmlNode nodMeta = xmlDoc.SelectSingleNode("Project/MetaData");
-            if (nodMeta == null)
+            XmlNode nodProject = xmlDoc.SelectSingleNode("Project");
+            if (nodProject == null)
                 return null;
 
-            return BaseDataset.LoadMetadata(nodMeta);
+            return BaseDataset.LoadMetadata(nodProject);
         }
 
         private string GetWarehouseId(XmlDocument xmlDoc)
         {
             //< Warehouse id = "e9bd505e-9158-41ed-9a26-7f616804aaac" apiUrl = "https://api.data.riverscapes.net" ref= "MTcxNTEyMjA2ODE3Mw==" />
 
-            XmlNode nodWarehouse = xmlDoc.SelectSingleNode("Warehouse");
+            XmlNode nodWarehouse = xmlDoc.SelectSingleNode("Project/Warehouse");
             if (nodWarehouse is XmlNode)
             {
                 XmlAttribute attId = nodWarehouse.Attributes["id"];

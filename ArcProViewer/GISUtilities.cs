@@ -91,6 +91,20 @@ namespace ArcProViewer
             });
         }
 
+        public static void RemoveGroupLayer(string groupName, ILayerContainer parent)
+        {
+            QueuedTask.Run(() =>
+           {
+               // If no parent provided then look at the top level
+               if (parent == null)
+                   parent = MapView.Active.Map;
+
+               ArcGIS.Desktop.Mapping.GroupLayer layer = GetGroupLayer(groupName, null).Result;
+               if (layer != null)
+                   ((ILayerContainerEdit)layer.Parent).RemoveLayer(layer);
+           });
+        }
+
         public static ILayerContainer BuildArcMapGroupLayers(TreeViewItemModel node, GISUtilities.NodeInsertModes topLevelMode = GISUtilities.NodeInsertModes.Insert)
         {
             ILayerContainer parent = node.Parent == null ? MapView.Active.Map : BuildArcMapGroupLayers(node.Parent, topLevelMode);

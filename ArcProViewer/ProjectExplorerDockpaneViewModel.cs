@@ -222,10 +222,10 @@ namespace ArcProViewer
 
         private bool CanExecuteLayerMetaData(object parameter)
         {
-            if (parameter is ProjectTree.IMetadata)
+            if (parameter is TreeViewItemModel)
             {
-                return ((ProjectTree.IMetadata)parameter).Metadata.Count > 0;
-
+                var project = ((TreeViewItemModel)parameter).Item as RaveProject;
+                return project is RaveProject && project.Metadata != null && project.Metadata.Count > 0;
             }
             return false;
         }
@@ -233,24 +233,41 @@ namespace ArcProViewer
         private void ExecuteBrowseFolder(object parameter)
         {
             var node = parameter as TreeViewItemModel;
-            if (node.Item is FileSystemDataset)
+            if (node != null)
             {
-                var dataset = (FileSystemDataset)node.Item;
-                if (dataset.WorkspacePath.Exists)
-                    Process.Start(dataset.WorkspacePath.FullName);
+                DirectoryInfo dir = null;
+                if (node.Item is FileSystemDataset)
+                {
+                    dir = ((FileSystemDataset)node.Item).WorkspacePath;
+                }
+                else if (node.Item is RaveProject)
+                {
+                    dir = ((RaveProject)node.Item).Folder;
+                }
+
+                if (dir != null && dir.Exists)
+                {
+                    Process.Start(new ProcessStartInfo(dir.FullName) { UseShellExecute = true });
+                }
             }
         }
 
         private bool CanExecuteBrowseFolder(object parameter)
         {
-            if (parameter is null)
-                return false;
-
             var node = parameter as TreeViewItemModel;
-            if (node.Item is FileSystemDataset)
+            if (node != null)
             {
-                var dataset = (FileSystemDataset)node.Item;
-                return dataset.WorkspacePath.Exists;
+                DirectoryInfo dir = null;
+                if (node.Item is FileSystemDataset)
+                {
+                    dir = ((FileSystemDataset)node.Item).WorkspacePath;
+                }
+                else if (node.Item is RaveProject)
+                {
+                    dir = ((RaveProject)node.Item).Folder;
+                }
+
+                return dir.Exists;
             }
 
             return false;
@@ -274,7 +291,7 @@ namespace ArcProViewer
         private void ExecuteOpenFile(object parameter)
         {
             var node = parameter as TreeViewItemModel;
-            if (node.Item is FileSystemDataset)
+            if (node != null && node.Item is FileSystemDataset)
             {
                 var dataset = (FileSystemDataset)node.Item;
                 if (dataset.Exists)
@@ -285,7 +302,7 @@ namespace ArcProViewer
         private bool CanExecuteOpenFile(object parameter)
         {
             var node = parameter as TreeViewItemModel;
-            if (node.Item is FileSystemDataset)
+            if (node!= null && node.Item is FileSystemDataset)
             {
                 var dataset = (FileSystemDataset)node.Item;
                 return dataset.Exists;
@@ -297,11 +314,11 @@ namespace ArcProViewer
         private void ExecuteDataExchange(object parameter)
         {
             var node = parameter as TreeViewItemModel;
-            if (node.Item is RaveProject)
+            if (node!= null && node.Item is RaveProject)
             {
                 var project = (RaveProject)node.Item;
                 if (!string.IsNullOrEmpty(project.WarehouseId))
-                    Process.Start(project.WarehouseUri.ToString());
+                    Process.Start(new ProcessStartInfo(project.WarehouseUri.ToString()) { UseShellExecute = true });
             }
         }
 
@@ -330,12 +347,30 @@ namespace ArcProViewer
 
         private void ExecuteClose(object parameter)
         {
+            if (parameter is TreeViewItemModel)
+            {
+                TreeViewItemModel projectNode = (TreeViewItemModel)parameter;
+                RaveProject project = projectNode.Item as RaveProject;
+                if (project is RaveProject)
+                {
+                    try
+                    {
+                        GISUtilities.RemoveGroupLayer(project.Name, null);
+                    }
+                    catch (Exception ex)
+                    {
+                        // Proceed even though there will be lingering items in map ToC
+                        Console.WriteLine("Failed to remove project group layer from map.");
+                    }
 
+                    TreeViewItems.Remove(projectNode);
+                }
+            }
         }
 
         private bool CanExecuteClose(object parameter)
         {
-            return parameter is TreeViewItemModel;
+            return parameter is TreeViewItemModel && ((TreeViewItemModel)parameter).Item is RaveProject;
         }
 
         #endregion

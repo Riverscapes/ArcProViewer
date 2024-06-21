@@ -17,7 +17,44 @@
             </ResourceDictionary.MergedDictionaries>
 
             <ContextMenu x:Key="ProjectContextMenu">
-                <MenuItem Command="{Binding DataContext.Action1Command, RelativeSource={RelativeSource AncestorType=TreeView}}" Header="Project 1">
+                <MenuItem
+                    Command="{Binding DataContext.BrowseFolder, RelativeSource={RelativeSource AncestorType=TreeView}}"
+                    CommandParameter="{Binding}"
+                    Header="Browse Project Folder">
+                    <MenuItem.Icon>
+                        <Image
+                            Width="16"
+                            Height="16"
+                            Source="pack://application:,,,/ArcProViewer;component/Images/folder16.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem
+                    Command="{Binding DataContext.LayerMetaData, RelativeSource={RelativeSource AncestorType=TreeView}}"
+                    CommandParameter="{Binding}"
+                    Header="View Project MetaData">
+                    <MenuItem.Icon>
+                        <Image
+                            Width="16"
+                            Height="16"
+                            Source="pack://application:,,,/ArcProViewer;component/Images/metadata16.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+
+                <MenuItem
+                    Command="{Binding DataContext.DataExchange, RelativeSource={RelativeSource AncestorType=TreeView}}"
+                    CommandParameter="{Binding}"
+                    Header="View In Data Exchange">
+                    <MenuItem.Icon>
+                        <Image
+                            Width="16"
+                            Height="16"
+                            Source="pack://application:,,,/ArcProViewer;component/Images/exchange16.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem
+                    Command="{Binding DataContext.AddAllLayersToMap, RelativeSource={RelativeSource AncestorType=TreeView}}"
+                    CommandParameter="{Binding}"
+                    Header="Add All Layers To Map">
                     <MenuItem.Icon>
                         <Image
                             Width="16"
@@ -25,12 +62,52 @@
                             Source="pack://application:,,,/ArcProViewer;component/Images/add_to_map16.png" />
                     </MenuItem.Icon>
                 </MenuItem>
-
-                <MenuItem Command="{Binding DataContext.Action2Command, RelativeSource={RelativeSource AncestorType=TreeView}}" Header="Project 2" />
+                <MenuItem
+                    Command="{Binding DataContext.Refresh, RelativeSource={RelativeSource AncestorType=TreeView}}"
+                    CommandParameter="{Binding}"
+                    Header="Refresh Project Hierarchy">
+                    <MenuItem.Icon>
+                        <Image
+                            Width="16"
+                            Height="16"
+                            Source="pack://application:,,,/ArcProViewer;component/Images/refresh16.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem
+                    Command="{Binding DataContext.Close, RelativeSource={RelativeSource AncestorType=TreeView}}"
+                    CommandParameter="{Binding}"
+                    Header="Close Project">
+                    <MenuItem.Icon>
+                        <Image
+                            Width="16"
+                            Height="16"
+                            Source="pack://application:,,,/ArcProViewer;component/Images/close16.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
             </ContextMenu>
             <ContextMenu x:Key="FileContextMenu">
-                <MenuItem Command="{Binding DataContext.ActionACommand, RelativeSource={RelativeSource AncestorType=TreeView}}" Header="File A" />
-                <MenuItem Command="{Binding DataContext.ActionBCommand, RelativeSource={RelativeSource AncestorType=TreeView}}" Header="File B" />
+                <MenuItem
+                    Command="{Binding DataContext.OpenFile, RelativeSource={RelativeSource AncestorType=TreeView}}"
+                    CommandParameter="{Binding}"
+                    Header="View Layer MetaData">
+                    <MenuItem.Icon>
+                        <Image
+                            Width="16"
+                            Height="16"
+                            Source="pack://application:,,,/ArcProViewer;component/Images/open16.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem
+                    Command="{Binding DataContext.BrowseFolder, RelativeSource={RelativeSource AncestorType=TreeView}}"
+                    CommandParameter="{Binding}"
+                    Header="View Layer MetaData">
+                    <MenuItem.Icon>
+                        <Image
+                            Width="16"
+                            Height="16"
+                            Source="pack://application:,,,/ArcProViewer;component/Images/folder16.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
             </ContextMenu>
             <ContextMenu x:Key="GroupContextMenu">
                 <MenuItem
@@ -66,6 +143,17 @@
                             Width="16"
                             Height="16"
                             Source="pack://application:,,,/ArcProViewer;component/Images/metadata16.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem
+                    Command="{Binding DataContext.BrowseFolder, RelativeSource={RelativeSource AncestorType=TreeView}}"
+                    CommandParameter="{Binding}"
+                    Header="View Layer MetaData">
+                    <MenuItem.Icon>
+                        <Image
+                            Width="16"
+                            Height="16"
+                            Source="pack://application:,,,/ArcProViewer;component/Images/folder16.png" />
                     </MenuItem.Icon>
                 </MenuItem>
             </ContextMenu>

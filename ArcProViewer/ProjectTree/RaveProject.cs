@@ -8,7 +8,7 @@ using System.Windows.Controls;
 
 namespace ArcProViewer.ProjectTree
 {
-    public class RaveProject : ITreeItem
+    public class RaveProject : ITreeItem, IMetadata
     {
         public readonly FileInfo ProjectFile;
         public DirectoryInfo Folder { get { return ProjectFile.Directory; } }
@@ -21,9 +21,12 @@ namespace ArcProViewer.ProjectTree
         public string Name { get; set; }
         public string ImagePath => "viewer16.png";
 
+        public string WarehouseId { get; internal set; }
+
+        public Dictionary<string, string> Metadata { get; internal set; }
+
         public RaveProject(string projectFile)
         {
-
             ProjectFile = new FileInfo(projectFile);
 
             try
@@ -36,6 +39,8 @@ namespace ArcProViewer.ProjectTree
 
                 ProjectType = GetProjectXPath(xmlDoc, "Project/ProjectType", true);
                 OriginalName = Name = GetProjectXPath(xmlDoc, "Project/Name", true);
+                WarehouseId = GetWarehouseId(xmlDoc);
+                Metadata = GetMetdata(xmlDoc);
             }
             catch (Exception ex)
             {
@@ -155,39 +160,41 @@ namespace ArcProViewer.ProjectTree
             throw new Exception(string.Format("Failed to find business logic for project type {0} for project file {1}", ProjectType, ProjectFile));
         }
 
-        public XmlNode MetDataNode
+        public Dictionary<string, string> GetMetdata(XmlDocument xmlDoc)
         {
-            get
-            {
-                XmlDocument xmlDoc = new XmlDocument();
-                xmlDoc.Load(ProjectFile.FullName);
+            XmlNode nodMeta = xmlDoc.SelectSingleNode("Project/MetaData");
+            if (nodMeta == null)
+                return null;
 
-                return xmlDoc.SelectSingleNode("Project/MetaData");
-            }
+            return BaseDataset.LoadMetadata(nodMeta);
         }
 
-        public Uri WarehouseReference
+        private string GetWarehouseId(XmlDocument xmlDoc)
+        {
+            //< Warehouse id = "e9bd505e-9158-41ed-9a26-7f616804aaac" apiUrl = "https://api.data.riverscapes.net" ref= "MTcxNTEyMjA2ODE3Mw==" />
+
+            XmlNode nodWarehouse = xmlDoc.SelectSingleNode("Warehouse");
+            if (nodWarehouse is XmlNode)
+            {
+                XmlAttribute attId = nodWarehouse.Attributes["id"];
+                if (attId is XmlAttribute && !string.IsNullOrEmpty(attId.InnerText))
+                {
+                    return attId.InnerText;
+                }
+            }
+
+            return string.Empty;
+        }
+
+        public Uri WarehouseUri
         {
             get
             {
-                try
+                if (!string.IsNullOrEmpty(WarehouseId))
                 {
-                    XmlDocument xmlDoc = new XmlDocument();
-                    xmlDoc.Load(ProjectFile.FullName);
-
-                    XmlNode nodProgram = xmlDoc.SelectSingleNode("Project/Warehouse/Meta[@name='program']");
-                    XmlNode nodID = xmlDoc.SelectSingleNode("Project/Warehouse/Meta[@name='id']");
-
-                    if (nodProgram is XmlNode && nodID is XmlNode && !string.IsNullOrEmpty(nodProgram.InnerText) && !string.IsNullOrEmpty(nodID.InnerText))
-                    {
-                        Uri baseUri = new Uri(Properties.Resources.DataWarehouseURL);
-                        Uri projectUri = new Uri(baseUri, string.Format("#/{0}/{1}", nodProgram.InnerText, nodID.InnerText));
-                        return projectUri;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Error attempting to build warehouse URL for project.");
+                    Uri baseUri = new Uri(Properties.Resources.DataWarehouseURL);
+                    Uri projectUri = new Uri(baseUri, string.Format("/p/{0}", WarehouseId));
+                    return projectUri;
                 }
 
                 return null;
@@ -530,23 +537,7 @@ namespace ArcProViewer.ProjectTree
             string absPath = Path.Combine(ProjectFile.DirectoryName, path);
 
             // Load the layer metadata
-            Dictionary<string, string> metadata = null;
-            XmlNode nodMetadata = nodGISNode.SelectSingleNode("MetaData");
-            if (nodMetadata is XmlNode && nodMetadata.HasChildNodes)
-            {
-                metadata = new Dictionary<string, string>();
-                foreach (XmlNode nodMeta in nodMetadata.SelectNodes("Meta"))
-                {
-                    XmlAttribute attName = nodMeta.Attributes["name"];
-                    if (attName is XmlAttribute && !string.IsNullOrEmpty(attName.InnerText))
-                    {
-                        if (!string.IsNullOrEmpty(nodMeta.InnerText))
-                        {
-                            metadata.Add(attName.InnerText, nodMeta.InnerText);
-                        }
-                    }
-                }
-            }
+            Dictionary<string, string> metadata = BaseDataset.LoadMetadata(nodGISNode);
 
             FileSystemDataset dataset = null;
             switch (type.ToLower())

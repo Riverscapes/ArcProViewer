@@ -4,7 +4,7 @@ using System.IO;
 
 namespace ArcProViewer.ProjectTree
 {
-    public abstract class GISDataset : FileSystemDataset, IGISLayer
+    public abstract class GISDataset : FileSystemDataset, IGISLayer, IMetadata
     {
         public const string ProgramKey = "_rs_wh_program";
         public const string ProjectKey = "_rs_wh_id";
@@ -14,7 +14,7 @@ namespace ArcProViewer.ProjectTree
 
         public string GISPath { get { return Path.FullName; } }
 
-        public readonly Dictionary<string, string> Metadata;
+        public Dictionary<string, string> Metadata { get; internal set; }
 
         public abstract Uri GISUri { get; }
 

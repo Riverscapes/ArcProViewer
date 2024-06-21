@@ -15,9 +15,12 @@
  * 
  */
 
+using System.Collections.Generic;
+using System.Xml;
+
 namespace ArcProViewer.ProjectTree
 {
-    public abstract class BaseDataset: ITreeItem
+    public abstract class BaseDataset : ITreeItem
     {
         public string Name { get; private set; }
         public string Id { get; private set; }
@@ -39,5 +42,29 @@ namespace ArcProViewer.ProjectTree
             ImageFileNameMissing = imageFileNameExists;
             Id = id;
         }
+        public static Dictionary<string, string> LoadMetadata(XmlNode nodeParent)
+        {
+            // Load the layer metadata
+            Dictionary<string, string> metadata = null;
+            XmlNode nodMetadata = nodeParent.SelectSingleNode("MetaData");
+            if (nodMetadata is XmlNode && nodMetadata.HasChildNodes)
+            {
+                metadata = new Dictionary<string, string>();
+                foreach (XmlNode nodMeta in nodMetadata.SelectNodes("Meta"))
+                {
+                    XmlAttribute attName = nodMeta.Attributes["name"];
+                    if (attName is XmlAttribute && !string.IsNullOrEmpty(attName.InnerText))
+                    {
+                        if (!string.IsNullOrEmpty(nodMeta.InnerText))
+                        {
+                            metadata.Add(attName.InnerText, nodMeta.InnerText);
+                        }
+                    }
+                }
+            }
+
+            return metadata;
+        }
     }
+
 }

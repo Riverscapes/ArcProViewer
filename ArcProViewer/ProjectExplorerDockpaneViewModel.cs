@@ -37,6 +37,14 @@ namespace ArcProViewer
         public ICommand BrowseFolder { get; }
         public ICommand AddAllLayersToMap { get; }
 
+        public ICommand DataExchange { get; }
+
+        public ICommand OpenFile { get; }
+
+        public ICommand Refresh { get; }
+
+        public ICommand Close { get; }
+
         private ObservableCollection<TreeViewItemModel> treeViewItems;
         public ObservableCollection<TreeViewItemModel> TreeViewItems
         {
@@ -55,6 +63,10 @@ namespace ArcProViewer
             LayerMetaData = new ContextMenuCommand(ExecuteLayerMetaData, CanExecuteLayerMetaData);
             BrowseFolder = new ContextMenuCommand(ExecuteBrowseFolder, CanExecuteBrowseFolder);
             AddAllLayersToMap = new ContextMenuCommand(ExecuteAddAllLayersToMap, CanExecuteAddAllLayersToMap);
+            OpenFile = new ContextMenuCommand(ExecuteOpenFile, CanExecuteOpenFile);
+            DataExchange = new ContextMenuCommand(ExecuteDataExchange, CanExecuteDataExchange);
+            Refresh = new ContextMenuCommand(ExecuteRefresh, CanExecuteRefresh);
+            Close = new ContextMenuCommand(ExecuteClose, CanExecuteClose);
         }
 
         /// <summary>
@@ -182,7 +194,7 @@ namespace ArcProViewer
         {
             if (node.Item is GISDataset)
                 GISUtilities.AddToMapAsync(node);
-    
+
             if (recursive && node.Children != null && node.Children.Count > 0)
             {
                 node.Children.ToList().ForEach(x => AddLayerToMap(x, recursive));
@@ -210,12 +222,12 @@ namespace ArcProViewer
 
         private bool CanExecuteLayerMetaData(object parameter)
         {
-            // Your logic to determine if the command can execute
-            // For example, always return true for now
-            var node = parameter as TreeViewItemModel;
-            var dataset = node.Item as GISDataset;
+            if (parameter is ProjectTree.IMetadata)
+            {
+                return ((ProjectTree.IMetadata)parameter).Metadata.Count > 0;
 
-            return dataset.Metadata != null && dataset.Metadata.Count > 0;
+            }
+            return false;
         }
 
         private void ExecuteBrowseFolder(object parameter)
@@ -231,6 +243,9 @@ namespace ArcProViewer
 
         private bool CanExecuteBrowseFolder(object parameter)
         {
+            if (parameter is null)
+                return false;
+
             var node = parameter as TreeViewItemModel;
             if (node.Item is FileSystemDataset)
             {
@@ -248,8 +263,79 @@ namespace ArcProViewer
 
         private bool CanExecuteAddAllLayersToMap(object parameter)
         {
+            if (parameter is TreeViewItemModel)
+            {
+                var node = parameter as TreeViewItemModel;
+                return node.Children != null && node.Children.Count > 0;
+            }
+
+            return false;
+        }
+        private void ExecuteOpenFile(object parameter)
+        {
             var node = parameter as TreeViewItemModel;
-            return node.Children != null && node.Children.Count > 0;
+            if (node.Item is FileSystemDataset)
+            {
+                var dataset = (FileSystemDataset)node.Item;
+                if (dataset.Exists)
+                    Process.Start(dataset.Path.FullName);
+            }
+        }
+
+        private bool CanExecuteOpenFile(object parameter)
+        {
+            var node = parameter as TreeViewItemModel;
+            if (node.Item is FileSystemDataset)
+            {
+                var dataset = (FileSystemDataset)node.Item;
+                return dataset.Exists;
+            }
+
+            return false;
+        }
+
+        private void ExecuteDataExchange(object parameter)
+        {
+            var node = parameter as TreeViewItemModel;
+            if (node.Item is RaveProject)
+            {
+                var project = (RaveProject)node.Item;
+                if (!string.IsNullOrEmpty(project.WarehouseId))
+                    Process.Start(project.WarehouseUri.ToString());
+            }
+        }
+
+        private bool CanExecuteDataExchange(object parameter)
+        {
+            var node = parameter as TreeViewItemModel;
+            if (node != null && node.Item is RaveProject)
+            {
+                var project = (RaveProject)node.Item;
+                return !string.IsNullOrEmpty(project.WarehouseId);
+            }
+
+            return false;
+        }
+
+
+        private void ExecuteRefresh(object parameter)
+        {
+
+        }
+
+        private bool CanExecuteRefresh(object parameter)
+        {
+            return parameter is TreeViewItemModel;
+        }
+
+        private void ExecuteClose(object parameter)
+        {
+
+        }
+
+        private bool CanExecuteClose(object parameter)
+        {
+            return parameter is TreeViewItemModel;
         }
 
         #endregion

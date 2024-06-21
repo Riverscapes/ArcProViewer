@@ -20,6 +20,7 @@
     <None Remove="Images\description32.png" />
     <None Remove="Images\draft16.png" />
     <None Remove="Images\draft32.png" />
+    <None Remove="Images\exchange16.png" />
     <None Remove="Images\expand32.png" />
     <None Remove="Images\folder16.png" />
     <None Remove="Images\folder32.png" />
@@ -35,6 +36,7 @@
     <None Remove="Images\mActionEditCopy.png" />
     <None Remove="Images\metadata.png" />
     <None Remove="Images\metadata16.png" />
+    <None Remove="Images\open16.png" />
     <None Remove="Images\open32.png" />
     <None Remove="Images\refresh16.png" />
     <None Remove="Images\refresh32.png" />
@@ -58,13 +60,14 @@
     <Content Include="DarkImages\AddInDesktop32.png" />
     <Resource Include="Images\add_to_map16.png" />
     <Content Include="Images\add_to_map32.png" />
-    <Content Include="Images\close16.png" />
+    <Resource Include="Images\close16.png" />
     <Content Include="Images\close32.png" />
     <Content Include="Images\collapse16.png" />
     <Content Include="Images\collapse32.png" />
     <Content Include="Images\description32.png" />
     <Content Include="Images\draft32.png" />
     <Content Include="Images\expand32.png" />
+    <Resource Include="Images\exchange16.png" />
     <Resource Include="Images\Layers\draft16.png" />
     <Resource Include="Images\folder16.png" />
     <Content Include="Images\folder32.png" />
@@ -87,6 +90,8 @@
     <Resource Include="Images\Layers\raster16.png" />
     <Resource Include="Images\Layers\satellite16.png" />
     <Resource Include="Images\metadata16.png" />
+    <Resource Include="Images\open16.png" />
+    <Resource Include="Images\refresh16.png" />
     <Resource Include="Images\view16.png" />
     <Resource Include="Images\viewer16.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>

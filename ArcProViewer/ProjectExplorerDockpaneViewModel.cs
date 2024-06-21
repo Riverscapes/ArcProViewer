@@ -19,15 +19,23 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace ArcProViewer
 {
     internal class ProjectExplorerDockpaneViewModel : DockPane, INotifyPropertyChanged
     {
         private const string _dockPaneID = "ArcProViewer_ProjectExplorerDockpane";
+
+        public ICommand AddToMap { get; }
+        public ICommand LayerMetaData { get; }
+        public ICommand BrowseFolder { get; }
+        public ICommand AddAllLayersToMap { get; }
 
         private ObservableCollection<TreeViewItemModel> treeViewItems;
         public ObservableCollection<TreeViewItemModel> TreeViewItems
@@ -42,6 +50,11 @@ namespace ArcProViewer
         public ProjectExplorerDockpaneViewModel()
         {
             TreeViewItems = new ObservableCollection<TreeViewItemModel>();
+
+            AddToMap = new ContextMenuCommand(ExecuteAddToMap, CanExecuteAddToMap);
+            LayerMetaData = new ContextMenuCommand(ExecuteLayerMetaData, CanExecuteLayerMetaData);
+            BrowseFolder = new ContextMenuCommand(ExecuteBrowseFolder, CanExecuteBrowseFolder);
+            AddAllLayersToMap = new ContextMenuCommand(ExecuteAddAllLayersToMap, CanExecuteAddAllLayersToMap);
         }
 
         /// <summary>
@@ -100,7 +113,7 @@ namespace ArcProViewer
                 newProject.BuildProjectTree(projectItem, cmsProject);
                 pevm.treeViewItems.Add(projectItem);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 //TODO: show reason that project tree failed to build
                 return;
@@ -157,5 +170,88 @@ namespace ArcProViewer
             else
                 return proj.OriginalName;
         }
+
+        private void CollapseChildren(object parameter)
+        {
+            // Your action logic here
+            // For example: System.Windows.MessageBox.Show("Action 1 executed");
+            System.Windows.MessageBox.Show("Action 1 executed");
+        }
+
+        private void AddLayerToMap(TreeViewItemModel node, bool recursive)
+        {
+            if (node.Item is GISDataset)
+                GISUtilities.AddToMapAsync(node);
+    
+            if (recursive && node.Children != null && node.Children.Count > 0)
+            {
+                node.Children.ToList().ForEach(x => AddLayerToMap(x, recursive));
+            }
+        }
+
+        #region Context Menu Commands
+
+        private void ExecuteAddToMap(object parameter)
+        {
+            AddLayerToMap(parameter as TreeViewItemModel, false);
+        }
+
+        private bool CanExecuteAddToMap(object parameter)
+        {
+            // Your logic to determine if the command can execute
+            // For example, always return true for now
+            return true;
+        }
+
+        private void ExecuteLayerMetaData(object parameter)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool CanExecuteLayerMetaData(object parameter)
+        {
+            // Your logic to determine if the command can execute
+            // For example, always return true for now
+            var node = parameter as TreeViewItemModel;
+            var dataset = node.Item as GISDataset;
+
+            return dataset.Metadata != null && dataset.Metadata.Count > 0;
+        }
+
+        private void ExecuteBrowseFolder(object parameter)
+        {
+            var node = parameter as TreeViewItemModel;
+            if (node.Item is FileSystemDataset)
+            {
+                var dataset = (FileSystemDataset)node.Item;
+                if (dataset.WorkspacePath.Exists)
+                    Process.Start(dataset.WorkspacePath.FullName);
+            }
+        }
+
+        private bool CanExecuteBrowseFolder(object parameter)
+        {
+            var node = parameter as TreeViewItemModel;
+            if (node.Item is FileSystemDataset)
+            {
+                var dataset = (FileSystemDataset)node.Item;
+                return dataset.WorkspacePath.Exists;
+            }
+
+            return false;
+        }
+
+        private void ExecuteAddAllLayersToMap(object parameter)
+        {
+            AddLayerToMap(parameter as TreeViewItemModel, true);
+        }
+
+        private bool CanExecuteAddAllLayersToMap(object parameter)
+        {
+            var node = parameter as TreeViewItemModel;
+            return node.Children != null && node.Children.Count > 0;
+        }
+
+        #endregion
     }
 }

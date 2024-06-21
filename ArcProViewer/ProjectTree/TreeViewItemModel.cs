@@ -23,6 +23,8 @@ namespace ArcProViewer.ProjectTree
             Parent = parent;
         }
 
+        public string ContextMenu => Item.GetType().Name;
+
         public TreeViewItemModel() { }
 
         public TreeViewItemModel AddChild(ITreeItem item)

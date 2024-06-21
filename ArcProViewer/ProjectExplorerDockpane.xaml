@@ -15,6 +15,72 @@
             <ResourceDictionary.MergedDictionaries>
                 <extensions:DesignOnlyResourceDictionary Source="pack://application:,,,/ArcGIS.Desktop.Framework;component\Themes\Default.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <ContextMenu x:Key="ProjectContextMenu">
+                <MenuItem Command="{Binding DataContext.Action1Command, RelativeSource={RelativeSource AncestorType=TreeView}}" Header="Project 1">
+                    <MenuItem.Icon>
+                        <Image
+                            Width="16"
+                            Height="16"
+                            Source="pack://application:,,,/ArcProViewer;component/Images/add_to_map16.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+
+                <MenuItem Command="{Binding DataContext.Action2Command, RelativeSource={RelativeSource AncestorType=TreeView}}" Header="Project 2" />
+            </ContextMenu>
+            <ContextMenu x:Key="FileContextMenu">
+                <MenuItem Command="{Binding DataContext.ActionACommand, RelativeSource={RelativeSource AncestorType=TreeView}}" Header="File A" />
+                <MenuItem Command="{Binding DataContext.ActionBCommand, RelativeSource={RelativeSource AncestorType=TreeView}}" Header="File B" />
+            </ContextMenu>
+            <ContextMenu x:Key="GroupContextMenu">
+                <MenuItem
+                    Command="{Binding DataContext.AddAllLayersToMap, RelativeSource={RelativeSource AncestorType=TreeView}}"
+                    CommandParameter="{Binding}"
+                    Header="Add All Layers To Map">
+                    <MenuItem.Icon>
+                        <Image
+                            Width="16"
+                            Height="16"
+                            Source="pack://application:,,,/ArcProViewer;component/Images/add_to_map16.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </ContextMenu>
+            <ContextMenu x:Key="VectorContextMenu">
+                <MenuItem
+                    Command="{Binding DataContext.AddToMap, RelativeSource={RelativeSource AncestorType=TreeView}}"
+                    CommandParameter="{Binding}"
+                    Header="Add To Map">
+                    <MenuItem.Icon>
+                        <Image
+                            Width="16"
+                            Height="16"
+                            Source="pack://application:,,,/ArcProViewer;component/Images/add_to_map16.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem
+                    Command="{Binding DataContext.LayerMetaData, RelativeSource={RelativeSource AncestorType=TreeView}}"
+                    CommandParameter="{Binding}"
+                    Header="View Layer MetaData">
+                    <MenuItem.Icon>
+                        <Image
+                            Width="16"
+                            Height="16"
+                            Source="pack://application:,,,/ArcProViewer;component/Images/metadata16.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </ContextMenu>
+            <ContextMenu x:Key="RasterContextMenu">
+                <MenuItem Command="{Binding DataContext.ActionACommand, RelativeSource={RelativeSource AncestorType=TreeView}}" Header="Raster A" />
+                <MenuItem Command="{Binding DataContext.ActionBCommand, RelativeSource={RelativeSource AncestorType=TreeView}}" Header="Raster B" />
+            </ContextMenu>
+            <ContextMenu x:Key="WMSContextMenu">
+                <MenuItem Command="{Binding DataContext.ActionACommand, RelativeSource={RelativeSource AncestorType=TreeView}}" Header="WMS A" />
+                <MenuItem Command="{Binding DataContext.ActionBCommand, RelativeSource={RelativeSource AncestorType=TreeView}}" Header="WMS B" />
+            </ContextMenu>
+            <ContextMenu x:Key="ProjectViewContextMenu">
+                <MenuItem Command="{Binding DataContext.ActionACommand, RelativeSource={RelativeSource AncestorType=TreeView}}" Header="View A" />
+                <MenuItem Command="{Binding DataContext.ActionBCommand, RelativeSource={RelativeSource AncestorType=TreeView}}" Header="View B" />
+            </ContextMenu>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -22,6 +88,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <DockPanel
+            Name="Riverscapes"
             Grid.Row="0"
             KeyboardNavigation.TabNavigation="Local"
             LastChildFill="true">
@@ -58,6 +125,27 @@
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding IsExpanded}" Value="False">
                                     <Setter Property="TreeViewItem.IsExpanded" Value="False" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ContextMenu}" Value="RaveProject">
+                                    <Setter Property="ContextMenu" Value="{StaticResource ProjectContextMenu}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ContextMenu}" Value="FileSystemDataset">
+                                    <Setter Property="ContextMenu" Value="{StaticResource FileContextMenu}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ContextMenu}" Value="GroupLayer">
+                                    <Setter Property="ContextMenu" Value="{StaticResource GroupContextMenu}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ContextMenu}" Value="Vector">
+                                    <Setter Property="ContextMenu" Value="{StaticResource VectorContextMenu}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ContextMenu}" Value="Raster">
+                                    <Setter Property="ContextMenu" Value="{StaticResource RasterContextMenu}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ContextMenu}" Value="WMSLayer">
+                                    <Setter Property="ContextMenu" Value="{StaticResource WMSContextMenu}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ContextMenu}" Value="ProjectView">
+                                    <Setter Property="ContextMenu" Value="{StaticResource ProjectViewContextMenu}" />
                                 </DataTrigger>
                             </HierarchicalDataTemplate.Triggers>
                         </HierarchicalDataTemplate>

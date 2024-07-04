@@ -32,9 +32,6 @@ namespace ArcProViewer.Buttons
                 //Cursor.Current = Cursors.Default;
                 //ErrorHandling.frmException.HandleException(ex, "Error Showing RAVE About Form", string.Empty);
             }
-
-            // TODO: GIS
-            //ArcMap.Application.CurrentTool = null;
         }
     }
 }

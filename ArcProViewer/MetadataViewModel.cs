@@ -3,16 +3,12 @@ using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Windows;
 using System.Windows.Input;
-using ArcGIS.Desktop.Framework;
-using System.Security.Policy;
 
 namespace ArcProViewer
 {
     internal class MetadataViewModel : INotifyPropertyChanged
     {
-
         public ObservableCollection<KeyValuePair<string, string>> Items { get; }
 
         public ICommand ValueDoubleClickCommand { get; }

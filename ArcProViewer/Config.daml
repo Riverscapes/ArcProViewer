@@ -27,7 +27,8 @@
 	  <groups>
 		<!-- comment this out if you have no controls on the Addin tab to avoid
               an empty group-->
-		<group id="ArcProViewer_Group1" caption="Riverscapes Viewer" appearsOnAddInTab="true">
+		<group id="ArcProViewer_Group1" caption="Riverscapes Viewer" appearsOnAddInTab="true"
+			   keytip="V">
 		  <!-- host controls within groups -->
 		  <button refID="RiverscapesViewer_Buttons_ProjectExplorerDockpane" size="large" />
 		  <button refID="RiverscapesViewer_Buttons_OpenProject" size="large" />
@@ -45,7 +46,8 @@
 				className="ArcProViewer.Buttons.OpenProjectButton"
 				caption="Open Project"
 				smallImage="Images/open32.png"
-				largeImage="Images/open32.png">
+				largeImage="Images/open32.png"
+				keytip="O">
 		  <tooltip heading="Open Project">
 			Open Riverscapes project and load it into the Project Explorer to view its contents.
 			<disabledText />
@@ -56,7 +58,8 @@
 				className="ArcProViewer.Buttons.CloseProjectButton"
 				loadOnClick="true"
 				smallImage="Images/close32"
-				largeImage="Images/close32.png">
+				largeImage="Images/close32.png"
+				keytip="C">
 		  <tooltip heading="Close Project">
 			Close all open projects<disabledText />
 		  </tooltip>
@@ -64,7 +67,8 @@
 		<button id="RiverscapesViewer_Buttons_ProjectExplorerDockpane"
 				caption="Project Explorer" className="ArcProViewer.Buttons.UpdateResourcesButton"
 				loadOnClick="true" smallImage="Images/viewer16.png"
-				largeImage="Images/viewer32.png">
+				largeImage="Images/viewer32.png"
+				keytip="E">
 		  <tooltip heading="Show Dockpane">
 			Show Riverscapes Viewer Project Explorer Dockpane<disabledText />
 		  </tooltip>
@@ -74,7 +78,8 @@
 				className="ArcProViewer.Buttons.HelpButton"
 				loadOnClick="true"
 				smallImage="Images/help16.png"
-				largeImage="Images/help32.png">
+				largeImage="Images/help32.png"
+				keytip="H">
 		  <tooltip heading="Tooltip Heading">
 			Launch the Riverscapes Viewer Online Help<disabledText />
 		  </tooltip>
@@ -84,7 +89,8 @@
 				className="ArcProViewer.Buttons.UpdateResourcesButton"
 				loadOnClick="true"
 				smallImage="Images/refresh16.png"
-				largeImage="Images/refresh32.png">
+				largeImage="Images/refresh32.png"
+				keytip="U">
 		  <tooltip heading="Tooltip Heading">
 			Update the business logic and symbology resource files that are needed to display Riverscapes projects.<disabledText />
 		  </tooltip>
@@ -94,7 +100,8 @@
 				className="ArcProViewer.Buttons.FindResourcesFolderButton"
 				loadOnClick="true"
 				smallImage="Images/folder16.png"
-				largeImage="Images/folder32.png">
+				largeImage="Images/folder32.png"
+				keytip="R">
 		  <tooltip heading="Tooltip Heading">
 			Open Windows Explorer at the folder where Riverscapes Viewer saves business logic and symbology resource files.<disabledText />
 		  </tooltip>
@@ -104,7 +111,8 @@
 				className="ArcProViewer.Buttons.AboutButton"
 				loadOnClick="true"
 				smallImage="Images/viewer16.png"
-				largeImage="Images/viewer32.png">
+				largeImage="Images/viewer32.png"
+				keytip="A">
 		  <tooltip heading="Tooltip Heading">
 			About Riverscapes Viewer<disabledText />
 		  </tooltip>
@@ -112,7 +120,7 @@
 	  </controls>
 	  <dockPanes>
 		<dockPane id="ArcProViewer_ProjectExplorerDockpane"
-				  caption=""
+				  caption="Riverscapes"
 				  image="Images/viewer16.png"
 				  className="ProjectExplorerDockpaneViewModel"
 				  dock="group"

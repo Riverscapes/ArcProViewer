@@ -227,7 +227,9 @@
             Name="Riverscapes"
             Grid.Row="0"
             KeyboardNavigation.TabNavigation="Local"
-            LastChildFill="true">
+            LastChildFill="true"
+            
+            >
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />

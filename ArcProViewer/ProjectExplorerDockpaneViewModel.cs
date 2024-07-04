@@ -1,19 +1,5 @@
-﻿using ArcGIS.Core.CIM;
-using ArcGIS.Core.Data;
-using ArcGIS.Core.Geometry;
-using ArcGIS.Desktop.Catalog;
-using ArcGIS.Desktop.Core;
-using ArcGIS.Desktop.Editing;
-using ArcGIS.Desktop.Extensions;
-using ArcGIS.Desktop.Framework;
+﻿using ArcGIS.Desktop.Framework;
 using ArcGIS.Desktop.Framework.Contracts;
-using ArcGIS.Desktop.Framework.Dialogs;
-using ArcGIS.Desktop.Framework.Threading.Tasks;
-using ArcGIS.Desktop.Internal.Framework.Utilities;
-using ArcGIS.Desktop.Internal.Mapping.TOC;
-using ArcGIS.Desktop.KnowledgeGraph;
-using ArcGIS.Desktop.Layouts;
-using ArcGIS.Desktop.Mapping;
 using ArcProViewer.ProjectTree;
 using System;
 using System.Collections.Generic;
@@ -22,7 +8,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection.Metadata;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml;
@@ -340,7 +325,6 @@ namespace ArcProViewer
                     Process.Start(new ProcessStartInfo(dataset.Path.FullName) { UseShellExecute = true });
             }
         }
-
         private bool CanExecuteOpenFile(object parameter)
         {
             var node = parameter as TreeViewItemModel;
@@ -375,7 +359,6 @@ namespace ArcProViewer
 
             return false;
         }
-
 
         private void ExecuteRefresh(object parameter)
         {
@@ -419,7 +402,6 @@ namespace ArcProViewer
                 }
             }
         }
-
         private bool CanExecuteClose(object parameter)
         {
             return parameter is TreeViewItemModel && ((TreeViewItemModel)parameter).Item is RaveProject;
@@ -532,6 +514,5 @@ namespace ArcProViewer
             }
         }
         #endregion
-
     }
 }

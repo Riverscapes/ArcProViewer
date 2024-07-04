@@ -2,7 +2,6 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using ArcGIS.Desktop.Catalog;
 using ArcGIS.Desktop.Core;
 using ArcGIS.Desktop.Mapping;
@@ -10,10 +9,7 @@ using ArcProViewer.ProjectTree;
 using ArcGIS.Core.Data;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
 using System.Threading.Tasks;
-using ArcGIS.Desktop.Internal.Mapping.Controls.QueryBuilder.SqlEditor;
-using ArcGIS.Core.Data.UtilityNetwork.Trace;
 using ArcGIS.Core.CIM;
-using ArcGIS.Core.Data.Raster;
 
 namespace ArcProViewer
 {
@@ -191,65 +187,17 @@ namespace ArcProViewer
 
         public static ILayerContainer BuildArcMapGroupLayers(TreeViewItemModel node, GISUtilities.NodeInsertModes topLevelMode = GISUtilities.NodeInsertModes.Insert)
         {
-            System.Diagnostics.Debug.Print("Name: {0}", node.Name);
-            System.Diagnostics.Debug.Print("Parent: {0}", node.Parent);
+            //System.Diagnostics.Debug.Print("Name: {0}", node.Name);
+            //System.Diagnostics.Debug.Print("Parent: {0}", node.Parent);
 
             ILayerContainer parent = node.Parent == null ? MapView.Active.Map : BuildArcMapGroupLayers(node.Parent, topLevelMode);
 
-            System.Diagnostics.Debug.Print("Parent: {0}", parent.ToString());
+            //System.Diagnostics.Debug.Print("Parent: {0}", parent.ToString());
 
             if (node.Item is BaseDataset)
                 return parent;
             else
                 return GISUtilities.AddGroupLayer(node.Item.Name, 0, parent as ILayerContainerEdit).Result;
         }
-
-
-
-        //public static async Task LoadLayerWithSymbologyAsync(string layerPath, string layerFilePath)
-        //{
-        //    await QueuedTask.Run(async () =>
-        //    {
-        //        // Check if the layer file exists
-        //        if (!File.Exists(layerFilePath))
-        //            throw new FileNotFoundException("The layer file does not exist.", layerFilePath);
-
-        //        // Apply symbology from the layer file
-        //        //await ApplySymbologyFromLayerFileAsync(layerPath, layerFilePath);
-
-        //        // Create the new layer
-        //        var layer = LayerFactory.Instance.CreateLayer(new Uri(layerPath));
-        //        if (layer == null)
-        //            throw new InvalidOperationException("Failed to create layer from the layer file.");
-
-        //        // Get the current map
-        //        var map = MapView.Active.Map;
-
-        //        // Add the layer to the map's Layers collection
-        //        map.Layers.Append(layer);
-        //    });
-        //}
-
-        //private static async Task ApplySymbologyFromLayerFileAsync(string layerPath, string layerFilePath)
-        //{
-        //    await QueuedTask.Run(() =>
-        //    {
-        //        // Open the layer file
-        //        var layerFile = LayerFactory.Instance.CreateLayerFile(layerFilePath);
-
-        //        // Get the layer from the layer file
-        //        var sourceLayer = layerFile.GetLayersAsFlattenedList()[0] as FeatureLayer;
-        //        if (sourceLayer == null)
-        //            throw new InvalidOperationException("The layer file does not contain a feature layer.");
-
-        //        // Get the target layer
-        //        var targetLayer = LayerFactory.Instance.CreateLayer(new Uri(layerPath)) as FeatureLayer;
-        //        if (targetLayer == null)
-        //            throw new InvalidOperationException("Failed to create layer from the specified path.");
-
-        //        // Apply symbology from the source layer to the target layer
-        //        targetLayer?.SetRenderer(sourceLayer.Renderer);
-        //    });
-        //}
     }
 }

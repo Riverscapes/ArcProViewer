@@ -1,7 +1,6 @@
 ﻿using ArcProViewer.ProjectTree;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -18,6 +17,7 @@ namespace ArcProViewer
         public ProjectExplorerDockpaneView()
         {
             InitializeComponent();
+            this.Name = "test";
 
             this.DataContext = new ProjectExplorerDockpaneViewModel();
         }
@@ -130,5 +130,4 @@ namespace ArcProViewer
         }
 
     }
-
 }

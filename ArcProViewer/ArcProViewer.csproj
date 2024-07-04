@@ -55,9 +55,7 @@
   <ItemGroup>
     <Content Include="Config.daml" />
     <Content Include="Images\add16.png" />
-    <Content Include="Images\add32.png" />    
-    <Content Include="Images\AddInDesktop16.png" />
-    <Content Include="Images\AddInDesktop32.png" />
+    <Content Include="Images\add32.png" />
     <Content Include="DarkImages\AddInDesktop16.png" />
     <Content Include="DarkImages\AddInDesktop32.png" />
     <Resource Include="Images\add_to_map16.png" />
@@ -68,7 +66,6 @@
     <Content Include="Images\collapse16.png" />
     <Content Include="Images\collapse32.png" />
     <Content Include="Images\description32.png" />
-    <Content Include="Images\draft32.png" />
     <Content Include="Images\expand32.png" />
     <Resource Include="Images\exchange16.png" />
     <Resource Include="Images\Layers\draft16.png" />

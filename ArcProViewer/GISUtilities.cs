@@ -44,12 +44,16 @@ namespace ArcProViewer
                 else if (item.Item is ProjectTree.WMSLayer)
                     uri = ((ProjectTree.WMSLayer)item.Item).URL;
 
-                Layer layer = parent.FindLayer(uri.ToString(), false);
+                // Attempt to find the layer in the Map ToC if it has been added already and has an ArcPro URI
+                Layer layer = string.IsNullOrEmpty(item.MapLayerUri) ? null : parent.FindLayer(item.MapLayerUri, false);
+              
                 if (layer == null)
                 {
                     Console.WriteLine("Creating layer: {0}", uri.ToString());
                     layer = LayerFactory.Instance.CreateLayer(uri, parent as ILayerContainerEdit, index, item.Name);
-                    layer.SetName(item.Name);
+
+                    // Store the ArcPro layer URI so that we can find this layer again
+                    item.MapLayerUri = layer.URI;
 
                     if (item.Item is Vector && layer is FeatureLayer)
                     {
@@ -109,7 +113,12 @@ namespace ArcProViewer
 
         public static ILayerContainer BuildArcMapGroupLayers(TreeViewItemModel node, GISUtilities.NodeInsertModes topLevelMode = GISUtilities.NodeInsertModes.Insert)
         {
+            System.Diagnostics.Debug.Print("Name: {0}", node.Name);
+            System.Diagnostics.Debug.Print("Parent: {0}", node.Parent);
+
             ILayerContainer parent = node.Parent == null ? MapView.Active.Map : BuildArcMapGroupLayers(node.Parent, topLevelMode);
+
+            System.Diagnostics.Debug.Print("Parent: {0}", parent.ToString());
 
             if (node.Item is BaseDataset)
                 return parent;

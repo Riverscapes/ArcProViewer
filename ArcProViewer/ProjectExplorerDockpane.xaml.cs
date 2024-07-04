@@ -61,12 +61,13 @@ namespace ArcProViewer
 
             try
             {
-                await GISUtilities.AddToMapAsync(selNode);
+                int index = selNode.Parent.Children.IndexOf(selNode);
+                await GISUtilities.AddToMapAsync(selNode, index);
                 //GISUtilities.AddToMap(layer, layer.Name, parentGrpLyr, GetPrecedingLayers(selNode), symbology, transparency: layer.Transparency, definition_query: def_query);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(string.Format("{0}\n\n{1}", ex.Message, ((IGISLayer) selNode.Item).GISPath), "Error Adding Dataset To Map", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                MessageBox.Show(string.Format("{0}\n\n{1}", ex.Message, ((IGISLayer)selNode.Item).GISPath), "Error Adding Dataset To Map", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
             finally
             {

@@ -216,10 +216,13 @@ namespace ArcProViewer
             System.Windows.MessageBox.Show("Action 1 executed");
         }
 
-        private void AddLayerToMap(TreeViewItemModel node, bool recursive)
+        private async void AddLayerToMap(TreeViewItemModel node, bool recursive)
         {
             if (node.Item is IGISLayer)
-                GISUtilities.AddToMapAsync(node);
+            {
+                int index = node.Parent.Children.IndexOf(node);
+                await GISUtilities.AddToMapAsync(node, index);
+            }
 
             if (recursive && node.Children != null && node.Children.Count > 0)
             {

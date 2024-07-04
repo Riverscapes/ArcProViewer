@@ -24,8 +24,11 @@ namespace ArcProViewer
             Insert
         };
 
-        public static async Task AddToMapAsync(TreeViewItemModel item)
+        public static async Task AddToMapAsync(TreeViewItemModel item, int index)
         {
+            if (index < 0)
+                throw new ArgumentOutOfRangeException(nameof(index), "Layer index must be greater than or equal to zero");
+
             await QueuedTask.Run(() =>
             {
                 ILayerContainer parent = BuildArcMapGroupLayers(item, NodeInsertModes.Insert);
@@ -33,7 +36,7 @@ namespace ArcProViewer
                 Uri uri = null;
                 if (item.Item is GISDataset)
                 {
-                    GISDataset dataset  = item.Item as GISDataset;
+                    GISDataset dataset = item.Item as GISDataset;
                     uri = dataset.GISUri;
                     if (!dataset.Exists)
                         throw new FileNotFoundException("The dataset workspace file does not exist.", dataset.Path.FullName);
@@ -44,7 +47,8 @@ namespace ArcProViewer
                 Layer layer = parent.FindLayer(uri.ToString(), false);
                 if (layer == null)
                 {
-                    layer = LayerFactory.Instance.CreateLayer(uri, parent as ILayerContainerEdit);
+                    Console.WriteLine("Creating layer: {0}", uri.ToString());
+                    layer = LayerFactory.Instance.CreateLayer(uri, parent as ILayerContainerEdit, index, item.Name);
                     layer.SetName(item.Name);
 
                     if (item.Item is Vector && layer is FeatureLayer)

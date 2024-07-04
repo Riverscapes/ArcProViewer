@@ -70,7 +70,7 @@ namespace ArcProViewer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Symbology\esri.
+        ///   Looks up a localized string similar to Symbology\arcpro.
         /// </summary>
         internal static string AppDataSymbologyFolder {
             get {

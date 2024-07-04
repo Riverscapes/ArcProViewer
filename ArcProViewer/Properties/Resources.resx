@@ -121,7 +121,7 @@
     <value>RiverscapesViewer</value>
   </data>
   <data name="AppDataSymbologyFolder" xml:space="preserve">
-    <value>Symbology\esri</value>
+    <value>Symbology\arcpro</value>
   </data>
   <data name="AppDataSymbologySharedFolder" xml:space="preserve">
     <value>Shared</value>

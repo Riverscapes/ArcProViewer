@@ -12,7 +12,8 @@ using ArcGIS.Desktop.Framework.Threading.Tasks;
 using System.Threading.Tasks;
 using ArcGIS.Desktop.Internal.Mapping.Controls.QueryBuilder.SqlEditor;
 using ArcGIS.Core.Data.UtilityNetwork.Trace;
-
+using ArcGIS.Core.CIM;
+using ArcGIS.Core.Data.Raster;
 
 namespace ArcProViewer
 {
@@ -46,11 +47,43 @@ namespace ArcProViewer
 
                 // Attempt to find the layer in the Map ToC if it has been added already and has an ArcPro URI
                 Layer layer = string.IsNullOrEmpty(item.MapLayerUri) ? null : parent.FindLayer(item.MapLayerUri, false);
-              
+
                 if (layer == null)
                 {
                     Console.WriteLine("Creating layer: {0}", uri.ToString());
                     layer = LayerFactory.Instance.CreateLayer(uri, parent as ILayerContainerEdit, index, item.Name);
+
+                    // Apply symbology
+                    FileInfo symbologyLayerFilePath = GetSymbologyFile(item.Item as GISDataset);
+                    if (symbologyLayerFilePath is FileInfo)
+                    {
+                        try
+                        {
+                            // Get the Layer Document from the lyrx file
+                            LayerDocument layerDoc = new LayerDocument(symbologyLayerFilePath.FullName);
+                            var cimLyrDoc = layerDoc.GetCIMLayerDocument();
+
+                            if (item.Item is ProjectTree.Raster)
+                            {
+                                var colorizer = ((CIMRasterLayer)cimLyrDoc.LayerDefinitions[0]).Colorizer as CIMRasterColorizer;
+                                ((RasterLayer)layer).SetColorizer(colorizer);
+                            }
+                            else
+                            {
+                                //Get the renderer from the layer file
+                                var rendererFromLayerFile = ((CIMFeatureLayer)cimLyrDoc.LayerDefinitions[0]).Renderer;
+
+                                //Apply the renderer to the feature layer
+                                //Note: If working with a raster layer, use the SetColorizer method.
+                                ((FeatureLayer)layer).SetRenderer(rendererFromLayerFile);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Failed to apply symbology.");
+
+                        }
+                    }
 
                     // Store the ArcPro layer URI so that we can find this layer again
                     item.MapLayerUri = layer.URI;
@@ -66,6 +99,51 @@ namespace ArcProViewer
                 if (layer == null)
                     throw new InvalidOperationException("Failed to create layer from the layer file.");
             });
+        }
+
+
+        /// <summary>
+        /// Determine the location of the layer file for this GIS item
+        /// </summary>
+        /// <remarks>
+        /// The following locations will be searched in order for a 
+        /// file with the name SYMBOLOGY_KEY.lyr
+        /// 
+        /// 1. ProjectFolder
+        /// 2. %APPDATA%\RAVE\Symbology\esri\MODEL
+        /// 3. %APPDATA%\RAVE\Symbology\esrsi\Shared
+        /// 4. SOFTWARE_DEPLOYMENT\Symbology\esri\MODEL
+        /// 5. SOFTWARE_DEPLOYMENT\Symbology\esri\Shared
+        /// 
+        /// </remarks>
+        public static FileInfo GetSymbologyFile(GISDataset layer)
+        {
+            if (layer is null || string.IsNullOrEmpty(layer.SymbologyKey))
+                return null;
+
+            string appDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Properties.Resources.AppDataFolder);
+            string symbologyFolder = Path.Combine(appDataFolder, Properties.Resources.AppDataSymbologyFolder);
+
+            List<string> SearchFolders = new List<string>()
+            {
+                layer.Project.Folder.FullName,
+                Path.Combine(symbologyFolder, layer.Project.ProjectType),
+                Path.Combine(symbologyFolder, Properties.Resources.AppDataSymbologySharedFolder)
+            };
+
+            foreach (string folder in SearchFolders)
+            {
+                if (Directory.Exists(folder))
+                {
+                    string path = Path.ChangeExtension(Path.Combine(folder, layer.SymbologyKey), "lyrx");
+                    if (File.Exists(path))
+                    {
+                        return new FileInfo(path);
+                    }
+                }
+            }
+
+            return null;
         }
 
         public static Task<ArcGIS.Desktop.Mapping.GroupLayer> GetGroupLayer(string groupName, ILayerContainer parent)

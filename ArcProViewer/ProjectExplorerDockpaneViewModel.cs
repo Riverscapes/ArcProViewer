@@ -104,20 +104,15 @@ namespace ArcProViewer
                 return;
 
             ProjectExplorerDockpaneViewModel pevm = (ProjectExplorerDockpaneViewModel)pane;
-            //ProjectExplorerDockpaneView content = pevm.Content as ProjectExplorerDockpaneView;
 
             // Detect if project is already in tree and simply select the node and return;
             foreach (TreeViewItemModel rootNod in pevm.TreeViewItems)
             {
                 if (rootNod.Item is RaveProject && ((RaveProject)rootNod.Item).IsSame(filePath))
                 {
-                    // TODO: select the existing node
                     return;
                 }
             }
-
-            // TODO: temp variable to get it compiling. Recode context menus
-            ContextMenu cmsProject = null;
 
             RaveProject newProject = new RaveProject(filePath);
             newProject.Name = pevm.GetUniqueProjectName(newProject);
@@ -126,13 +121,14 @@ namespace ArcProViewer
             projectItem.IsExpanded = true;
             try
             {
-                newProject.BuildProjectTree(projectItem, cmsProject);
+                newProject.BuildProjectTree(projectItem);
                 pevm.treeViewItems.Insert(0, projectItem);
             }
             catch (Exception ex)
             {
-                //TODO: show reason that project tree failed to build
-                return;
+                ex.Data["Project Name"] = newProject.Name;
+                ex.Data["Project Path"] = newProject.ProjectFile.FullName;
+                throw;
             }
 
             // Load default project view
@@ -148,8 +144,7 @@ namespace ArcProViewer
                     TreeViewItemModel nodDefault = allNodes.FirstOrDefault(x => x.Item is ProjectView && ((ProjectView)x.Item).IsDefaultView);
                     if (nodDefault is TreeViewItemModel)
                     {
-                        // TODO: GIS
-                        //AddChildrenToMap(nodDefault);
+                        pevm.ExecuteAddViewToMap(nodDefault);
                     }
                 }
                 catch (Exception ex)

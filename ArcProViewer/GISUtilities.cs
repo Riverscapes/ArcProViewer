@@ -158,12 +158,25 @@ namespace ArcProViewer
         {
             return QueuedTask.Run(async () =>
             {
-                ArcGIS.Desktop.Mapping.GroupLayer result = await GetGroupLayer(groupName, parent);
-                if (result != null)
-                    return result;
+            ArcGIS.Desktop.Mapping.GroupLayer result = await GetGroupLayer(groupName, parent);
+            if (result != null)
+                return result;
 
-                if (parent == null)
-                    parent = MapView.Active.Map;
+            if (parent == null)
+                parent = MapView.Active.Map;
+
+                // Ensure Basemap always added at bottom and projects at the top
+                if (parent == MapView.Active.Map)
+                {
+                    if (String.Compare(groupName, Properties.Resources.BasemapsLabel, true) == 0)
+                    {
+                        index = MapView.Active.Map.Layers.Count;
+                    }
+                    else
+                    {
+                        index = 0;
+                    }
+                }
 
                 ArcGIS.Desktop.Mapping.GroupLayer grpLayer = LayerFactory.Instance.CreateGroupLayer(parent, index, groupName);
                 grpLayer.SetExpanded(true);

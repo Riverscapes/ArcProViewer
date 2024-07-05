@@ -206,12 +206,8 @@ namespace ArcProViewer.ProjectTree
         /// </summary>
         /// <param name="treProject">This is the project tree item. It already exists, but hasn't been added to the tree yet</param>
         /// <returns></returns>
-        public void BuildProjectTree(TreeViewItemModel treProject, ContextMenu cmsProjectView)
+        public void BuildProjectTree(TreeViewItemModel treProject)
         {
-            // Assign the project CMS here so that it is available if anything else crashes or goes wrong.
-            // Allows the user to unload the partially loaded project.
-            //treProject.ContextMenu = cmsProjectView;
-
             // Remove all the existing child nodes (required if refreshing existing tree node)
             treProject.Children?.Clear();
 

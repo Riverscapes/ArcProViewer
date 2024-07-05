@@ -1,4 +1,6 @@
-﻿using ArcGIS.Desktop.Framework.Contracts;
+﻿using System;
+using System.Windows;
+using ArcGIS.Desktop.Framework.Contracts;
 
 namespace ArcProViewer.Buttons
 {
@@ -6,8 +8,15 @@ namespace ArcProViewer.Buttons
     {
         protected override void OnClick()
         {
-            var aboutWindow = new AboutWindow();
-            aboutWindow.ShowDialog();
+            try
+            {
+                var aboutWindow = new AboutWindow();
+                aboutWindow.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error Opening About Dialog");
+            }
         }
     }
 }

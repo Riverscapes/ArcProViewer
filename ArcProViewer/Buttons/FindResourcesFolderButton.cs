@@ -1,6 +1,7 @@
-﻿using ArcGIS.Desktop.Framework.Contracts;
-using System;
+﻿using System;
+using System.Windows;
 using System.Diagnostics;
+using ArcGIS.Desktop.Framework.Contracts;
 
 namespace ArcProViewer.Buttons
 {
@@ -18,7 +19,7 @@ namespace ArcProViewer.Buttons
             }
             catch (Exception ex)
             {
-                //TODO handle exception
+                MessageBox.Show(ex.Message, "Error Finding Resources Folder");
             }
         }
     }

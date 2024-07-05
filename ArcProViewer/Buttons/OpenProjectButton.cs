@@ -1,8 +1,8 @@
-﻿using ArcGIS.Desktop.Framework.Contracts;
-using ArcGIS.Desktop.Framework.Dialogs;
-using Microsoft.Win32;
-using System;
+﻿using System;
 using System.IO;
+using Microsoft.Win32;
+using ArcGIS.Desktop.Framework.Contracts;
+using ArcGIS.Desktop.Framework.Dialogs;
 
 namespace ArcProViewer.Buttons
 {
@@ -54,8 +54,7 @@ namespace ArcProViewer.Buttons
             }
             catch (Exception ex)
             {
-                //TODO
-                //ErrorHandling.frmException.HandleException(ex, "Error Opening Project", string.Empty);
+                MessageBox.Show(ex.Message, "Error Opening Project");
             }
         }
     }

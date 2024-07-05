@@ -1,5 +1,7 @@
-﻿using ArcGIS.Desktop.Framework.Contracts;
+﻿using System;
+using System.Windows;
 using System.Diagnostics;
+using ArcGIS.Desktop.Framework.Contracts;
 
 namespace ArcProViewer.Buttons
 {
@@ -7,7 +9,14 @@ namespace ArcProViewer.Buttons
     {
         protected override void OnClick()
         {
-            Process.Start(new ProcessStartInfo(Properties.Resources.HelpUrl) { UseShellExecute = true });
+            try
+            {
+                Process.Start(new ProcessStartInfo(Properties.Resources.HelpUrl) { UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error Launching Help");
+            }
         }
     }
 }

@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml;
@@ -217,9 +218,16 @@ namespace ArcProViewer
 
         #region Context Menu Commands
 
-        private void ExecuteAddToMap(object parameter)
+        public void ExecuteAddToMap(object parameter)
         {
-            AddLayerToMap(parameter as TreeViewItemModel, false);
+            try
+            {
+                AddLayerToMap(parameter as TreeViewItemModel, false);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error Adding a Layer to the Map");
+            }
         }
 
         private bool CanExecuteAddToMap(object parameter)
@@ -237,12 +245,19 @@ namespace ArcProViewer
                 if (node.Item is ProjectTree.IMetadata)
                 {
                     ProjectTree.IMetadata metadata = (ProjectTree.IMetadata)node.Item;
-                    var metadataWindow = new MetadataWindow(node.Item is RaveProject);
-                    MetadataViewModel model = metadataWindow.DataContext as MetadataViewModel;
-                    foreach (KeyValuePair<string, string> item in metadata.Metadata)
-                        model.Items.Add(item);
+                    try
+                    {
+                        var metadataWindow = new MetadataWindow(node.Item is RaveProject);
+                        MetadataViewModel model = metadataWindow.DataContext as MetadataViewModel;
+                        foreach (KeyValuePair<string, string> item in metadata.Metadata)
+                            model.Items.Add(item);
 
-                    metadataWindow.ShowDialog();
+                        metadataWindow.ShowDialog();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Error Adding All Layers to Map");
+                    }
                 }
             }
         }
@@ -259,23 +274,30 @@ namespace ArcProViewer
 
         private void ExecuteBrowseFolder(object parameter)
         {
-            var node = parameter as TreeViewItemModel;
-            if (node != null)
+            try
             {
-                DirectoryInfo dir = null;
-                if (node.Item is FileSystemDataset)
+                var node = parameter as TreeViewItemModel;
+                if (node != null)
                 {
-                    dir = ((FileSystemDataset)node.Item).WorkspacePath;
-                }
-                else if (node.Item is RaveProject)
-                {
-                    dir = ((RaveProject)node.Item).Folder;
-                }
+                    DirectoryInfo dir = null;
+                    if (node.Item is FileSystemDataset)
+                    {
+                        dir = ((FileSystemDataset)node.Item).WorkspacePath;
+                    }
+                    else if (node.Item is RaveProject)
+                    {
+                        dir = ((RaveProject)node.Item).Folder;
+                    }
 
-                if (dir != null && dir.Exists)
-                {
-                    Process.Start(new ProcessStartInfo(dir.FullName) { UseShellExecute = true });
+                    if (dir != null && dir.Exists)
+                    {
+                        Process.Start(new ProcessStartInfo(dir.FullName) { UseShellExecute = true });
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error Browsing to Folder");
             }
         }
 
@@ -302,7 +324,14 @@ namespace ArcProViewer
 
         private void ExecuteAddAllLayersToMap(object parameter)
         {
-            AddLayerToMap(parameter as TreeViewItemModel, true);
+            try
+            {
+                AddLayerToMap(parameter as TreeViewItemModel, true);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error Adding All Layers to Map");
+            }
         }
 
         private bool CanExecuteAddAllLayersToMap(object parameter)
@@ -315,14 +344,22 @@ namespace ArcProViewer
 
             return false;
         }
-        private void ExecuteOpenFile(object parameter)
+        public void ExecuteOpenFile(object parameter)
         {
             var node = parameter as TreeViewItemModel;
             if (node != null && node.Item is FileSystemDataset)
             {
                 var dataset = (FileSystemDataset)node.Item;
-                if (dataset.Exists)
-                    Process.Start(new ProcessStartInfo(dataset.Path.FullName) { UseShellExecute = true });
+                try
+                {
+                    if (dataset.Exists)
+                        Process.Start(new ProcessStartInfo(dataset.Path.FullName) { UseShellExecute = true });
+                }
+                catch (Exception ex)
+                {
+                    ex.Data["File Path"] = dataset.Path.FullName;
+                    MessageBox.Show(ex.Message, "Error Opening File");
+                }
             }
         }
         private bool CanExecuteOpenFile(object parameter)
@@ -343,8 +380,17 @@ namespace ArcProViewer
             if (node != null && node.Item is RaveProject)
             {
                 var project = (RaveProject)node.Item;
-                if (!string.IsNullOrEmpty(project.WarehouseId))
-                    Process.Start(new ProcessStartInfo(project.WarehouseUri.ToString()) { UseShellExecute = true });
+                try
+                {
+                    if (!string.IsNullOrEmpty(project.WarehouseId))
+                        Process.Start(new ProcessStartInfo(project.WarehouseUri.ToString()) { UseShellExecute = true });
+                }
+                catch (Exception ex)
+                {
+                    ex.Data["Project Name"] = project.Name;
+                    ex.Data["Project Path"] = project.ProjectFile.FullName;
+                    MessageBox.Show(ex.Message, "Error Opening Data Exchange");
+                }
             }
         }
 
@@ -369,8 +415,17 @@ namespace ArcProViewer
                 if (project is RaveProject)
                 {
                     string filePath = project.ProjectFile.FullName;
-                    TreeViewItems.Remove(projectNode);
-                    LoadProject(filePath);
+                    try
+                    {
+                        TreeViewItems.Remove(projectNode);
+                        LoadProject(filePath);
+                    }
+                    catch (Exception ex)
+                    {
+                        ex.Data["Project Name"] = project.Name;
+                        ex.Data["Project Path"] = filePath;
+                        MessageBox.Show(ex.Message, "Error Refreshing Project Tree");
+                    }
                 }
             }
         }
@@ -407,16 +462,23 @@ namespace ArcProViewer
             return parameter is TreeViewItemModel && ((TreeViewItemModel)parameter).Item is RaveProject;
         }
 
-        private void ExecuteAddViewToMap(object parameter)
+        public void ExecuteAddViewToMap(object parameter)
         {
-            if (parameter is TreeViewItemModel)
+            try
             {
-                TreeViewItemModel projectNode = (TreeViewItemModel)parameter;
-                ProjectView view = projectNode.Item as ProjectView;
-                if (view is ProjectView)
+                if (parameter is TreeViewItemModel)
                 {
-                    view.Layers.ForEach(x => AddLayerToMap(x.LayerNode, false));
+                    TreeViewItemModel projectNode = (TreeViewItemModel)parameter;
+                    ProjectView view = projectNode.Item as ProjectView;
+                    if (view is ProjectView)
+                    {
+                        view.Layers.ForEach(x => AddLayerToMap(x.LayerNode, false));
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error Adding View to Map");
             }
         }
 

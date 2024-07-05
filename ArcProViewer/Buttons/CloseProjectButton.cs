@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using ArcGIS.Desktop.Framework.Contracts;
 
 namespace ArcProViewer.Buttons
@@ -13,7 +14,7 @@ namespace ArcProViewer.Buttons
             }
             catch (Exception ex)
             {
-
+                MessageBox.Show(ex.Message, "Error Closing All Projects");
             }
         }
     }

@@ -26,77 +26,28 @@ namespace ArcProViewer
         {
             if (treProject.SelectedItem is TreeViewItemModel)
             {
-
                 TreeViewItemModel selNode = treProject.SelectedItem as TreeViewItemModel;
-                if (selNode.Item is IGISLayer)
+                try
                 {
-                    // TODO: GIS
-                    OnAddGISToMap(sender, e);
+                    var model = this.DataContext as ProjectExplorerDockpaneViewModel;
+
+                    if (selNode.Item is IGISLayer)
+                    {
+                        model.ExecuteAddToMap(selNode);
+                    }
+                    else if (selNode.Item is FileSystemDataset)
+                    {
+                        model.ExecuteOpenFile(selNode);
+                    }
+                    else if (selNode.Item is ProjectView)
+                    {
+                        model.ExecuteAddViewToMap(selNode);
+                    }
                 }
-                else if (selNode.Item is FileSystemDataset)
+                catch (Exception ex)
                 {
-                    //TODO: GIS
-                    //OnOpenFile(sender, e);
+                    MessageBox.Show(ex.Message, "Error Double Clicking Tree Item");
                 }
-                else if (selNode.Item is ProjectView)
-                {
-                    // TODO: GIS
-                    //OnAddChildrenToMap(sender, e);
-                }
-            }
-        }
-
-        public async Task OnAddGISToMap(object sender, EventArgs e)
-        {
-            TreeViewItemModel selNode = treProject.SelectedItem as TreeViewItemModel;
-
-            // TODO: GIS
-            //IGroupLayer parentGrpLyr = BuildArcMapGroupLayers(selNode);
-            //FileInfo symbology = GetSymbology(layer);
-
-            string def_query = string.Empty;
-
-            if (selNode.Item is ProjectTree.Vector)
-                def_query = ((ProjectTree.Vector)selNode.Item).DefinitionQuery;
-
-            try
-            {
-                int index = selNode.Parent.Children.IndexOf(selNode);
-                await GISUtilities.AddToMapAsync(selNode, index);
-                //GISUtilities.AddToMap(layer, layer.Name, parentGrpLyr, GetPrecedingLayers(selNode), symbology, transparency: layer.Transparency, definition_query: def_query);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(string.Format("{0}\n\n{1}", ex.Message, ((IGISLayer)selNode.Item).GISPath), "Error Adding Dataset To Map", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-            }
-            finally
-            {
-                //Cursor.Current = Cursors.Default;
-            }
-        }
-
-
-        public void CloseAllProjects()
-        {
-
-            // Detect if project is already in tree and simply select the node and return;
-            List<TreeViewItem> projects = new List<TreeViewItem>();
-            foreach (TreeViewItem rootNod in treProject.Items)
-            {
-                if (rootNod.Tag is RaveProject)
-                {
-                    projects.Add(rootNod);
-
-                    // Remove the project from the map. SearchRecursive = False
-                    // will ensure it only looks at the top level of the map ToC
-                    // TODO: GIS
-                    //ArcMapUtilities.RemoveGroupLayer(rootNod.Text, false);
-                }
-            }
-
-            foreach (TreeViewItem rootNod in projects)
-            {
-                treProject.Items.Remove(Parent);
             }
         }
 

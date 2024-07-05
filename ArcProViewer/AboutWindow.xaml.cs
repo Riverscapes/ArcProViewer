@@ -57,5 +57,10 @@ namespace ArcProViewer
             // Set the NavigateUri
             hypControl.NavigateUri = new Uri(url);
         }
+
+        private void cmdClose_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 }

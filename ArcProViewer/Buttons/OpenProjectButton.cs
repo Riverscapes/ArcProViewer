@@ -48,8 +48,16 @@ namespace ArcProViewer.Buttons
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show(string.Format("Error reading the project file '{0}'. Ensure that the file is a valid project file with valid and complete XML contents.\n\n{1}", f.FileName, ex.Message), Properties.Resources.ApplicationNameLong, System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+                        if (ex.Data.Contains("ErrorCode") && ex.Data["ErrorCode"].ToString() == ProjectTree.RaveProject.MISSING_BL_ERR_CODE)
+                        {
+                            MessageBox.Show("No business logic file could be found. Use the Update Resources button on the Riverscapes Viewer toolbar ribbon to ensure that you have the latest business logic and symbology files.", Properties.Resources.ApplicationNameLong, System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
+                        }
+                        else
+                        {
+                            MessageBox.Show(string.Format("Error reading the project file '{0}'. Ensure that the file is a valid project file with valid and complete XML contents.\n\n{1}", f.FileName, ex.Message), Properties.Resources.ApplicationNameLong, System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+                        }
                     }
+
                 }
             }
             catch (Exception ex)

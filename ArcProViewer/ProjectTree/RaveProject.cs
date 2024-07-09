@@ -10,6 +10,11 @@ namespace ArcProViewer.ProjectTree
 {
     public class RaveProject : ITreeItem, IMetadata
     {
+        // Special error code when there are no business logic files available. 
+        // This is typically because the user has not updated resources after initial
+        // install. This error code allows the UI to provide a custom warning.
+        public const string MISSING_BL_ERR_CODE = "Missing Business Logic File";
+
         public readonly FileInfo ProjectFile;
         public DirectoryInfo Folder { get { return ProjectFile.Directory; } }
         public readonly string ProjectType;
@@ -157,7 +162,9 @@ namespace ArcProViewer.ProjectTree
                 }
             }
 
-            throw new Exception(string.Format("Failed to find business logic for project type {0} for project file {1}", ProjectType, ProjectFile));
+            var ex3 = new Exception(string.Format("Failed to find business logic for project type {0} for project file {1}", ProjectType, ProjectFile));
+            ex3.Data["ErrorCode"] = MISSING_BL_ERR_CODE;
+            throw ex3;
         }
 
         public Dictionary<string, string> GetMetdata(XmlDocument xmlDoc)

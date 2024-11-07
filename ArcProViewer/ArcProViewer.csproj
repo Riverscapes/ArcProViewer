@@ -1,218 +1,213 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
-    <UseWPF>true</UseWPF>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <NoWarn>CA1416</NoWarn>
-	<Version>1.0.1</Version>
-  </PropertyGroup>
-  <ItemGroup>
-    <None Remove="Config.daml" />
-    <None Remove="Images\add16.png" />
-    <None Remove="Images\add32.png" />
-    <None Remove="Images\add_to_map16.png" />
-    <None Remove="Images\add_to_map32.png" />
-    <None Remove="Images\basemap16.png" />
-    <None Remove="Images\close16.png" />
-    <None Remove="Images\close32.png" />
-    <None Remove="Images\collapse16.png" />
-    <None Remove="Images\collapse32.png" />
-    <None Remove="Images\description32.png" />
-    <None Remove="Images\draft16.png" />
-    <None Remove="Images\draft32.png" />
-    <None Remove="Images\exchange16.png" />
-    <None Remove="Images\expand32.png" />
-    <None Remove="Images\folder16.png" />
-    <None Remove="Images\folder32.png" />
-    <None Remove="Images\help16.png" />
-    <None Remove="Images\help32.png" />
-    <None Remove="Images\Layers\Dot16.png" />
-    <None Remove="Images\Layers\draft32.png" />
-    <None Remove="Images\Layers\Multidot16.png" />
-    <None Remove="Images\Layers\Polygon16.png" />
-    <None Remove="Images\Layers\Polyline16.png" />
-    <None Remove="Images\Layers\Raster16.png" />
-    <None Remove="Images\Layers\satellite16.png" />
-    <None Remove="Images\mActionEditCopy.png" />
-    <None Remove="Images\metadata.png" />
-    <None Remove="Images\metadata16.png" />
-    <None Remove="Images\open16.png" />
-    <None Remove="Images\open32.png" />
-    <None Remove="Images\refresh16.png" />
-    <None Remove="Images\refresh32.png" />
-    <None Remove="Images\settings16.png" />
-    <None Remove="Images\settings32.png" />
-    <None Remove="Images\summarize32.png" />
-    <None Remove="Images\upload_project32.png" />
-    <None Remove="Images\view16.png" />
-    <None Remove="Images\view32.png" />
-    <None Remove="Images\viewer.ico" />
-    <None Remove="Images\viewer16.png" />
-    <None Remove="Images\viewer256.png" />
-    <None Remove="Images\viewer32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Config.daml" />
-    <Content Include="Images\add16.png" />
-    <Content Include="Images\add32.png" />
-    <Content Include="DarkImages\AddInDesktop16.png" />
-    <Content Include="DarkImages\AddInDesktop32.png" />
-    <Resource Include="Images\add_to_map16.png" />
-    <Content Include="Images\add_to_map32.png" />
-    <Resource Include="Images\basemap16.png" />
-    <Resource Include="Images\close16.png" />
-    <Content Include="Images\close32.png" />
-    <Content Include="Images\collapse16.png" />
-    <Content Include="Images\collapse32.png" />
-    <Content Include="Images\description32.png" />
-    <Content Include="Images\expand32.png" />
-    <Resource Include="Images\exchange16.png" />
-    <Resource Include="Images\Layers\draft16.png" />
-    <Resource Include="Images\folder16.png" />
-    <Content Include="Images\folder32.png" />
-    <Content Include="Images\help16.png" />
-    <Content Include="Images\help32.png" />
-    <Content Include="Images\mActionEditCopy.png" />
-    <Content Include="Images\metadata.png" />
-    <Content Include="Images\open32.png" />
-    <Content Include="Images\refresh32.png" />
-    <Content Include="Images\settings16.png" />
-    <Content Include="Images\settings32.png" />
-    <Content Include="Images\summarize32.png" />
-    <Content Include="Images\upload_project32.png" />
-    <Content Include="Images\view32.png" />
-    <Resource Include="Images\Layers\Dot16.png" />
-    <Resource Include="Images\Layers\draft32.png" />
-    <Resource Include="Images\Layers\Multidot16.png" />
-    <Resource Include="Images\Layers\polygon16.png" />
-    <Resource Include="Images\Layers\Polyline16.png" />
-    <Resource Include="Images\Layers\raster16.png" />
-    <Resource Include="Images\Layers\satellite16.png" />
-    <Resource Include="Images\metadata16.png" />
-    <Resource Include="Images\open16.png" />
-    <Resource Include="Images\refresh16.png" />
-    <Resource Include="Images\view16.png" />
-    <Resource Include="Images\viewer.ico" />
-    <Resource Include="Images\viewer16.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Content Include="Images\viewer32.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Content>    
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\launchSettings.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="ArcGIS.Desktop.Framework">
-      <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.Framework.dll</HintPath>
-      <CopyLocal>False</CopyLocal>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ArcGIS.Core">
-      <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Core.dll</HintPath>
-      <CopyLocal>False</CopyLocal>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ArcGIS.Desktop.Core">
-      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Core\ArcGIS.Desktop.Core.dll</HintPath>
-      <CopyLocal>False</CopyLocal>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ArcGIS.Desktop.Mapping">
-      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Mapping\ArcGIS.Desktop.Mapping.dll</HintPath>
-      <CopyLocal>False</CopyLocal>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ArcGIS.Desktop.Catalog">
-      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Catalog\ArcGIS.Desktop.Catalog.dll</HintPath>
-      <CopyLocal>False</CopyLocal>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ArcGIS.Desktop.Editing">
-      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Editing\ArcGIS.Desktop.Editing.dll</HintPath>
-      <CopyLocal>False</CopyLocal>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ArcGIS.Desktop.Extensions">
-      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\DesktopExtensions\ArcGIS.Desktop.Extensions.dll</HintPath>
-      <CopyLocal>False</CopyLocal>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ArcGIS.Desktop.GeoProcessing">
-      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\GeoProcessing\ArcGIS.Desktop.GeoProcessing.dll</HintPath>
-      <CopyLocal>False</CopyLocal>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ArcGIS.Desktop.Layouts">
-      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Layout\ArcGIS.Desktop.Layouts.dll</HintPath>
-      <CopyLocal>False</CopyLocal>
-      <Private>False</Private>
-    </Reference>
-	<Reference Include="ArcGIS.Desktop.KnowledgeGraph">
-		<HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\KnowledgeGraph\ArcGIS.Desktop.KnowledgeGraph.dll</HintPath>
-		<CopyLocal>False</CopyLocal>
-		<Private>False</Private>
-	</Reference>
-	<Reference Include="ArcGIS.Desktop.Shared.Wpf">
-        <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.Shared.Wpf.dll</HintPath>
-        <CopyLocal>False</CopyLocal>
-        <Private>False</Private>
-    </Reference>
-    <Reference Include="ArcGIS.Desktop.Ribbon.Wpf">
-      <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.Ribbon.Wpf.dll</HintPath>
-      <CopyLocal>False</CopyLocal>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ArcGIS.Desktop.DataGrid.Contrib.Wpf">
-      <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.DataGrid.Contrib.Wpf.dll</HintPath>
-      <CopyLocal>False</CopyLocal>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ArcGIS.Desktop.Resources">
-      <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.Resources.dll</HintPath>
-      <CopyLocal>False</CopyLocal>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ESRI.ArcGIS.ItemIndex">
-      <HintPath>C:\Program Files\ArcGIS\Pro\bin\ESRI.ArcGIS.ItemIndex.dll</HintPath>
-      <CopyLocal>False</CopyLocal>
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\viewer256.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Properties\Settings.Designer.cs">
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-   <Import Project="C:\Program Files\ArcGIS\Pro\bin\Esri.ProApp.SDK.Desktop.targets" Condition="Exists('C:\Program Files\ArcGIS\Pro\bin\Esri.ProApp.SDK.Desktop.targets') AND !Exists('Esri.ArcGISPro.Extensions.targets')" />
+	<PropertyGroup>
+		<TargetFramework>net6.0-windows</TargetFramework>
+		<UseWPF>true</UseWPF>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<NoWarn>CA1416</NoWarn>
+		<Version>1.0.3</Version>
+	</PropertyGroup>
+	<ItemGroup>
+		<None Remove="Config.daml" />
+		<None Remove="Images\add16.png" />
+		<None Remove="Images\add32.png" />
+		<None Remove="Images\add_to_map16.png" />
+		<None Remove="Images\add_to_map32.png" />
+		<None Remove="Images\basemap16.png" />
+		<None Remove="Images\close16.png" />
+		<None Remove="Images\close32.png" />
+		<None Remove="Images\collapse16.png" />
+		<None Remove="Images\collapse32.png" />
+		<None Remove="Images\description32.png" />
+		<None Remove="Images\draft16.png" />
+		<None Remove="Images\draft32.png" />
+		<None Remove="Images\exchange16.png" />
+		<None Remove="Images\expand32.png" />
+		<None Remove="Images\folder16.png" />
+		<None Remove="Images\folder32.png" />
+		<None Remove="Images\help16.png" />
+		<None Remove="Images\help32.png" />
+		<None Remove="Images\Layers\Dot16.png" />
+		<None Remove="Images\Layers\draft32.png" />
+		<None Remove="Images\Layers\Multidot16.png" />
+		<None Remove="Images\Layers\Polygon16.png" />
+		<None Remove="Images\Layers\Polyline16.png" />
+		<None Remove="Images\Layers\Raster16.png" />
+		<None Remove="Images\Layers\satellite16.png" />
+		<None Remove="Images\mActionEditCopy.png" />
+		<None Remove="Images\metadata.png" />
+		<None Remove="Images\metadata16.png" />
+		<None Remove="Images\open16.png" />
+		<None Remove="Images\open32.png" />
+		<None Remove="Images\refresh16.png" />
+		<None Remove="Images\refresh32.png" />
+		<None Remove="Images\settings16.png" />
+		<None Remove="Images\settings32.png" />
+		<None Remove="Images\summarize32.png" />
+		<None Remove="Images\upload_project32.png" />
+		<None Remove="Images\view16.png" />
+		<None Remove="Images\view32.png" />
+		<None Remove="Images\viewer.ico" />
+		<None Remove="Images\viewer16.png" />
+		<None Remove="Images\viewer256.png" />
+		<None Remove="Images\viewer32.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Content Include="Config.daml" />
+		<Content Include="Images\add16.png" />
+		<Content Include="Images\add32.png" />
+		<Content Include="DarkImages\AddInDesktop16.png" />
+		<Content Include="DarkImages\AddInDesktop32.png" />
+		<Resource Include="Images\add_to_map16.png" />
+		<Content Include="Images\add_to_map32.png" />
+		<Resource Include="Images\basemap16.png" />
+		<Resource Include="Images\close16.png" />
+		<Content Include="Images\close32.png" />
+		<Content Include="Images\collapse16.png" />
+		<Content Include="Images\collapse32.png" />
+		<Content Include="Images\description32.png" />
+		<Content Include="Images\expand32.png" />
+		<Resource Include="Images\exchange16.png" />
+		<Resource Include="Images\Layers\draft16.png" />
+		<Resource Include="Images\folder16.png" />
+		<Content Include="Images\folder32.png" />
+		<Content Include="Images\help16.png" />
+		<Content Include="Images\help32.png" />
+		<Content Include="Images\mActionEditCopy.png" />
+		<Content Include="Images\metadata.png" />
+		<Content Include="Images\open32.png" />
+		<Content Include="Images\refresh32.png" />
+		<Content Include="Images\settings16.png" />
+		<Content Include="Images\settings32.png" />
+		<Content Include="Images\summarize32.png" />
+		<Content Include="Images\upload_project32.png" />
+		<Content Include="Images\view32.png" />
+		<Resource Include="Images\Layers\Dot16.png" />
+		<Resource Include="Images\Layers\draft32.png" />
+		<Resource Include="Images\Layers\Multidot16.png" />
+		<Resource Include="Images\Layers\polygon16.png" />
+		<Resource Include="Images\Layers\Polyline16.png" />
+		<Resource Include="Images\Layers\raster16.png" />
+		<Resource Include="Images\Layers\satellite16.png" />
+		<Resource Include="Images\metadata16.png" />
+		<Resource Include="Images\open16.png" />
+		<Resource Include="Images\refresh16.png" />
+		<Resource Include="Images\view16.png" />
+		<Resource Include="Images\viewer.ico" />
+		<Resource Include="Images\viewer16.png">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Resource>
+		<Content Include="Images\viewer32.png">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="Properties\launchSettings.json" />
+	</ItemGroup>
+	<ItemGroup>
+		<Reference Include="ArcGIS.Desktop.Framework">
+			<HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.Framework.dll</HintPath>
+			<CopyLocal>False</CopyLocal>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="ArcGIS.Core">
+			<HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Core.dll</HintPath>
+			<CopyLocal>False</CopyLocal>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="ArcGIS.Desktop.Core">
+			<HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Core\ArcGIS.Desktop.Core.dll</HintPath>
+			<CopyLocal>False</CopyLocal>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="ArcGIS.Desktop.Mapping">
+			<HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Mapping\ArcGIS.Desktop.Mapping.dll</HintPath>
+			<CopyLocal>False</CopyLocal>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="ArcGIS.Desktop.Catalog">
+			<HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Catalog\ArcGIS.Desktop.Catalog.dll</HintPath>
+			<CopyLocal>False</CopyLocal>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="ArcGIS.Desktop.Editing">
+			<HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Editing\ArcGIS.Desktop.Editing.dll</HintPath>
+			<CopyLocal>False</CopyLocal>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="ArcGIS.Desktop.Extensions">
+			<HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\DesktopExtensions\ArcGIS.Desktop.Extensions.dll</HintPath>
+			<CopyLocal>False</CopyLocal>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="ArcGIS.Desktop.GeoProcessing">
+			<HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\GeoProcessing\ArcGIS.Desktop.GeoProcessing.dll</HintPath>
+			<CopyLocal>False</CopyLocal>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="ArcGIS.Desktop.Layouts">
+			<HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Layout\ArcGIS.Desktop.Layouts.dll</HintPath>
+			<CopyLocal>False</CopyLocal>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="ArcGIS.Desktop.Shared.Wpf">
+			<HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.Shared.Wpf.dll</HintPath>
+			<CopyLocal>False</CopyLocal>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="ArcGIS.Desktop.Ribbon.Wpf">
+			<HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.Ribbon.Wpf.dll</HintPath>
+			<CopyLocal>False</CopyLocal>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="ArcGIS.Desktop.DataGrid.Contrib.Wpf">
+			<HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.DataGrid.Contrib.Wpf.dll</HintPath>
+			<CopyLocal>False</CopyLocal>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="ArcGIS.Desktop.Resources">
+			<HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.Resources.dll</HintPath>
+			<CopyLocal>False</CopyLocal>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="ESRI.ArcGIS.ItemIndex">
+			<HintPath>C:\Program Files\ArcGIS\Pro\bin\ESRI.ArcGIS.ItemIndex.dll</HintPath>
+			<CopyLocal>False</CopyLocal>
+			<Private>False</Private>
+		</Reference>
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Images\viewer256.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Resource>
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Update="Properties\Resources.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Resources.resx</DependentUpon>
+		</Compile>
+		<Compile Update="Properties\Settings.Designer.cs">
+			<DesignTimeSharedInput>True</DesignTimeSharedInput>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Settings.settings</DependentUpon>
+		</Compile>
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Update="Properties\Resources.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Update="Properties\Settings.settings">
+			<Generator>SettingsSingleFileGenerator</Generator>
+			<LastGenOutput>Settings.Designer.cs</LastGenOutput>
+		</None>
+	</ItemGroup>
+	<Import Project="C:\Program Files\ArcGIS\Pro\bin\Esri.ProApp.SDK.Desktop.targets" Condition="Exists('C:\Program Files\ArcGIS\Pro\bin\Esri.ProApp.SDK.Desktop.targets') AND !Exists('Esri.ArcGISPro.Extensions.targets')" />
 </Project>

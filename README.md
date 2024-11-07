@@ -24,6 +24,17 @@ Configuring a build environment requires that you follow the steps on ESRI's [bu
 
 ![Pro SDK](https://camo.githubusercontent.com/e6430218e74635d78e78a6b700eaf37e1bec9059783db0b1b2977927b5e327cf/68747470733a2f2f457372692e6769746875622e696f2f6172636769732d70726f2d73646b2f696d616765732f496e7374616c6c6174696f6e2d496e737472756374696f6e732f4f6e6c696e655f4f7074696f6e312e706e67)
 
+## Development Setup
+
+1. Install Visual Studio 2022 Community Edition.
+1. Install ArcPro.
+1. If developing for the latest version of ArcPro (3.3 at time of writing) then:
+    1.1 Open Visual Studio and go to Extensions menu and choose Manage Extensions.
+    1.1 Search for ArcPro and install the SDK extensions.
+1. If developing for older version of ArcPro then go to ArcPro SDK repo and searches the releases for the desired version of ArcPro. Download the *.vis files from the binaries in the release and then double click these on your computer to install them.
+
+Note: ArcPro 3.1 uses .net 6 while ArcPro 3.3 uses .net 8.
+
 # Deployment
 
 1. Increment the version number.

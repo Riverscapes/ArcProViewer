@@ -12,7 +12,7 @@ namespace ArcProViewer.Buttons
             try
             {
                 string folder = System.IO.Path.Combine(Environment.GetEnvironmentVariable("APPDATA"), Properties.Resources.AppDataFolder);
-                if (System.IO.Path.Exists(folder))
+                if (System.IO.Directory.Exists(folder))
                 {
                     Process.Start(new ProcessStartInfo(folder) { UseShellExecute = true });
                 }

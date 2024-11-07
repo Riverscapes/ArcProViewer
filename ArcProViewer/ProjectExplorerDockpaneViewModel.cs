@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -197,19 +198,25 @@ namespace ArcProViewer
             System.Windows.MessageBox.Show("Action 1 executed");
         }
 
-        private async void AddLayerToMap(TreeViewItemModel node, bool recursive)
+        private async Task AddLayerToMap(TreeViewItemModel node, bool recursive)
         {
             if (node.Item is IGISLayer)
             {
+                var gis = new GISUtilities();
                 int index = node.Parent.Children.IndexOf(node);
-                await GISUtilities.AddToMapAsync(node, index);
+                await gis.AddToMapAsync(node, index);
             }
 
             if (recursive && node.Children != null && node.Children.Count > 0)
             {
-                node.Children.ToList().ForEach(x => AddLayerToMap(x, recursive));
+                // Use a foreach loop to await each recursive call
+                foreach (var child in node.Children)
+                {
+                    await AddLayerToMap(child, recursive);
+                }
             }
         }
+
 
         #region Context Menu Commands
 
@@ -440,7 +447,8 @@ namespace ArcProViewer
                 {
                     try
                     {
-                        GISUtilities.RemoveGroupLayer(project.Name, null);
+                        var gis = new GISUtilities();
+                        gis.RemoveGroupLayer(projectNode, null);
                     }
                     catch (Exception ex)
                     {

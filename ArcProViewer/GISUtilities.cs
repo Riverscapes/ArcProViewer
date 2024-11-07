@@ -10,10 +10,11 @@ using ArcGIS.Core.Data;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
 using System.Threading.Tasks;
 using ArcGIS.Core.CIM;
+using System.Windows.Controls;
 
 namespace ArcProViewer
 {
-    public struct GISUtilities
+    public class GISUtilities
     {
         public enum NodeInsertModes
         {
@@ -21,81 +22,147 @@ namespace ArcProViewer
             Insert
         };
 
-        public static async Task AddToMapAsync(TreeViewItemModel item, int index)
+        public async Task AddToMapAsync(TreeViewItemModel item, int index)
         {
             if (index < 0)
                 throw new ArgumentOutOfRangeException(nameof(index), "Layer index must be greater than or equal to zero");
 
-            await QueuedTask.Run(() =>
+            await QueuedTask.Run(async () =>
             {
-                ILayerContainer parent = BuildArcMapGroupLayers(item, NodeInsertModes.Insert);
+                // Attempt to find existing layer and exit if its present
+                if (!string.IsNullOrEmpty(item.MapLayerUri))
+                {
+                    Layer existingLayer = MapView.Active.Map.FindLayer(item.MapLayerUri);
+                    if (existingLayer != null)
+                        return;
+                }
+
+                // Build a list of the parent groups
+                var parentItems = new List<TreeViewItemModel>();
+                var parentItem = item.Parent;
+                while (parentItem is not null)
+                {
+                    parentItems.Add(parentItem);
+                    parentItem = parentItem.Parent;
+                }
+
+                // Now try to find these groups, starting with the root, project entry
+                parentItems.Reverse();
+                ILayerContainerEdit parent = MapView.Active.Map;
+                foreach (TreeViewItemModel groupItem in parentItems)
+                {
+                    // Attempt to find the existing ToC group layer
+                    if (!string.IsNullOrEmpty(groupItem.MapLayerUri))
+                    {
+                        var parentLayer = MapView.Active.Map.FindLayer(groupItem.MapLayerUri);
+                        if (parentLayer != null)
+                        {
+                            parent = parentLayer as ILayerContainerEdit;
+                            continue;
+                        }
+                    }
+
+                    // If this is the basemap group then find the count of project nodes
+                    // and ensure that we insert this basement below any Riverscapes projects.
+                    // For now we just add it to the bottom of the map ToC (even though this
+                    // means that it will be below any ESRI added basemaps
+                    if (groupItem.Item is BasemapGroup)
+                    {
+                        index = MapView.Active.Map.Layers.Count;
+                    }
+
+                    // If got to here then the group layer doesn't exist
+                    parent = LayerFactory.Instance.CreateGroupLayer(parent, index, groupItem.Name);
+                    groupItem.MapLayerUri = ((ArcGIS.Desktop.Mapping.GroupLayer)parent).URI;
+
+                    // DO NOT ATTEMPT TO EXPAND GROUP LAYERS HERE.
+                    // This was causing ghosting of groups in the Map ToC.
+                }
 
                 Uri uri = null;
-                if (item.Item is GISDataset)
+                if (item.Item is GISDataset dataset)
                 {
-                    GISDataset dataset = item.Item as GISDataset;
                     uri = dataset.GISUri;
                     if (!dataset.Exists)
                         throw new FileNotFoundException("The dataset workspace file does not exist.", dataset.Path.FullName);
                 }
-                else if (item.Item is ProjectTree.WMSLayer)
-                    uri = ((ProjectTree.WMSLayer)item.Item).URL;
-
-                // Attempt to find the layer in the Map ToC if it has been added already and has an ArcPro URI
-                Layer layer = string.IsNullOrEmpty(item.MapLayerUri) ? null : parent.FindLayer(item.MapLayerUri, false);
-
-                if (layer == null)
+                else if (item.Item is ProjectTree.WMSLayer wmsLayer)
                 {
-                    Console.WriteLine("Creating layer: {0}", uri.ToString());
-                    layer = LayerFactory.Instance.CreateLayer(uri, parent as ILayerContainerEdit, index, item.Name);
+                    uri = wmsLayer.URL;
+                }
 
-                    // Apply symbology
-                    FileInfo symbologyLayerFilePath = GetSymbologyFile(item.Item as GISDataset);
-                    if (symbologyLayerFilePath is FileInfo)
+                System.Diagnostics.Debug.Print("Creating layer {0} with parent {1}. Uri: {2}", item.Name, parent, uri?.ToString());
+                Layer layer = LayerFactory.Instance.CreateLayer(uri, parent as ILayerContainerEdit, index, item.Name);
+
+                // Apply symbology
+                FileInfo symbologyLayerFilePath = GetSymbologyFile(item.Item as GISDataset);
+                if (symbologyLayerFilePath != null)
+                {
+                    try
                     {
-                        try
-                        {
-                            // Get the Layer Document from the lyrx file
-                            LayerDocument layerDoc = new LayerDocument(symbologyLayerFilePath.FullName);
-                            var cimLyrDoc = layerDoc.GetCIMLayerDocument();
+                        // Get the Layer Document from the lyrx file
+                        LayerDocument layerDoc = new LayerDocument(symbologyLayerFilePath.FullName);
+                        var cimLyrDoc = layerDoc.GetCIMLayerDocument();
 
-                            if (item.Item is ProjectTree.Raster)
+                        if (item.Item is ProjectTree.Raster)
+                        {
+                            var colorizer = ((CIMRasterLayer)cimLyrDoc.LayerDefinitions[0]).Colorizer as CIMRasterColorizer;
+                            ((RasterLayer)layer).SetColorizer(colorizer);
+                        }
+                        else
+                        {
+                            var rendererFromLayerFile = ((CIMFeatureLayer)cimLyrDoc.LayerDefinitions[0]).Renderer;
+                            ((FeatureLayer)layer).SetRenderer(rendererFromLayerFile);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.Print($"Failed to apply symbology: {ex.Message}");
+                    }
+                }
+
+                // Store the ArcPro layer URI so that we can find this layer again
+                item.MapLayerUri = layer.URI;
+
+                // Apply feature filter
+                if (item.Item is Vector vector && layer is FeatureLayer featureLayer)
+                {
+                    if (!string.IsNullOrEmpty(vector.DefinitionQuery))
+                        featureLayer.SetDefinitionQuery(vector.DefinitionQuery);
+                }
+
+                // Trace back up hierarchy and expand any group layers
+                parentItem = item.Parent;
+                while (parentItem is not null)
+                {
+                    if (!string.IsNullOrEmpty(parentItem.MapLayerUri))
+                    {
+                        var parentLayer = MapView.Active.Map.FindLayer(parentItem.MapLayerUri);
+                        if (parentLayer is ArcGIS.Desktop.Mapping.GroupLayer)
+                        {
+                            var groupLayer = parentLayer as ArcGIS.Desktop.Mapping.GroupLayer;
+                            if (parentItem.Item is ProjectTree.GroupLayer)
                             {
-                                var colorizer = ((CIMRasterLayer)cimLyrDoc.LayerDefinitions[0]).Colorizer as CIMRasterColorizer;
-                                ((RasterLayer)layer).SetColorizer(colorizer);
+                                var parentGroupItem = parentItem.Item as ProjectTree.GroupLayer;
+                                if (!groupLayer.IsExpanded && parentGroupItem.Expanded)
+                                    groupLayer.SetExpanded(true);
                             }
                             else
                             {
-                                //Get the renderer from the layer file
-                                var rendererFromLayerFile = ((CIMFeatureLayer)cimLyrDoc.LayerDefinitions[0]).Renderer;
-
-                                //Apply the renderer to the feature layer
-                                //Note: If working with a raster layer, use the SetColorizer method.
-                                ((FeatureLayer)layer).SetRenderer(rendererFromLayerFile);
+                                groupLayer.SetExpanded(true);
                             }
                         }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine("Failed to apply symbology.");
 
-                        }
                     }
-
-                    // Store the ArcPro layer URI so that we can find this layer again
-                    item.MapLayerUri = layer.URI;
-
-                    if (item.Item is Vector && layer is FeatureLayer)
-                    {
-                        Vector vector = (Vector)item.Item;
-                        if (!string.IsNullOrEmpty(vector.DefinitionQuery))
-                            ((FeatureLayer)layer).SetDefinitionQuery(vector.DefinitionQuery);
-                    }
+                    parentItem = parentItem.Parent;
                 }
+
 
                 if (layer == null)
                     throw new InvalidOperationException("Failed to create layer from the layer file.");
             });
         }
+
 
 
         /// <summary>
@@ -112,7 +179,7 @@ namespace ArcProViewer
         /// 5. SOFTWARE_DEPLOYMENT\Symbology\esri\Shared
         /// 
         /// </remarks>
-        public static FileInfo GetSymbologyFile(GISDataset layer)
+        public FileInfo GetSymbologyFile(GISDataset layer)
         {
             if (layer is null || string.IsNullOrEmpty(layer.SymbologyKey))
                 return null;
@@ -142,75 +209,17 @@ namespace ArcProViewer
             return null;
         }
 
-        public static Task<ArcGIS.Desktop.Mapping.GroupLayer> GetGroupLayer(string groupName, ILayerContainer parent)
+        public async Task RemoveGroupLayer(TreeViewItemModel item, ILayerContainer parent)
         {
-            return QueuedTask.Run(() =>
-            {
-                if (parent == null)
-                    parent = MapView.Active.Map;
-
-                return parent.Layers.OfType<ArcGIS.Desktop.Mapping.GroupLayer>().FirstOrDefault(gl => gl.Name.Equals(groupName, StringComparison.OrdinalIgnoreCase));
-
-            });
-        }
-
-        public static Task<ArcGIS.Desktop.Mapping.GroupLayer> AddGroupLayer(string groupName, int index, ILayerContainerEdit parent)
-        {
-            return QueuedTask.Run(async () =>
-            {
-            ArcGIS.Desktop.Mapping.GroupLayer result = await GetGroupLayer(groupName, parent);
-            if (result != null)
-                return result;
-
-            if (parent == null)
-                parent = MapView.Active.Map;
-
-                // Ensure Basemap always added at bottom and projects at the top
-                if (parent == MapView.Active.Map)
-                {
-                    if (String.Compare(groupName, Properties.Resources.BasemapsLabel, true) == 0)
-                    {
-                        index = MapView.Active.Map.Layers.Count;
-                    }
-                    else
-                    {
-                        index = 0;
-                    }
-                }
-
-                ArcGIS.Desktop.Mapping.GroupLayer grpLayer = LayerFactory.Instance.CreateGroupLayer(parent, index, groupName);
-                grpLayer.SetExpanded(true);
-                return grpLayer;
-            });
-        }
-
-        public static void RemoveGroupLayer(string groupName, ILayerContainer parent)
-        {
-            QueuedTask.Run(() =>
+            await QueuedTask.Run(async () =>
            {
-               // If no parent provided then look at the top level
-               if (parent == null)
-                   parent = MapView.Active.Map;
-
-               ArcGIS.Desktop.Mapping.GroupLayer layer = GetGroupLayer(groupName, null).Result;
-               if (layer != null)
-                   ((ILayerContainerEdit)layer.Parent).RemoveLayer(layer);
+               if (!string.IsNullOrEmpty(item.MapLayerUri))
+               {
+                   Layer layer = MapView.Active.Map.FindLayer(item.MapLayerUri);
+                   if (layer != null)
+                       MapView.Active.Map.RemoveLayer(layer);
+               }
            });
-        }
-
-        public static ILayerContainer BuildArcMapGroupLayers(TreeViewItemModel node, GISUtilities.NodeInsertModes topLevelMode = GISUtilities.NodeInsertModes.Insert)
-        {
-            //System.Diagnostics.Debug.Print("Name: {0}", node.Name);
-            //System.Diagnostics.Debug.Print("Parent: {0}", node.Parent);
-
-            ILayerContainer parent = node.Parent == null ? MapView.Active.Map : BuildArcMapGroupLayers(node.Parent, topLevelMode);
-
-            //System.Diagnostics.Debug.Print("Parent: {0}", parent.ToString());
-
-            if (node.Item is BaseDataset)
-                return parent;
-            else
-                return GISUtilities.AddGroupLayer(node.Item.Name, 0, parent as ILayerContainerEdit).Result;
         }
     }
 }

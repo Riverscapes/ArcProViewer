@@ -56,12 +56,12 @@ namespace ArcProViewer
                 Dictionary<string, string> mani = JsonConvert.DeserializeObject<Dictionary<string, string>>(o2.ToString());
 
                 results.business_logic = downloadManifestFiles(ResourceURL, mani, @"RaveBusinessLogic\/.*\.xml", targetDir);
-                results.symbology_lyrs = downloadManifestFiles(ResourceURL, mani, @"Symbology\/esri\/.*\.lyr", targetDir);
+                results.symbology_lyrs = downloadManifestFiles(ResourceURL, mani, @"Symbology\/arcpro\/.*\.lyr", targetDir);
                 results.base_maps_xml = downloadManifestFiles(ResourceURL, mani, "BaseMaps.xml", targetDir);
 
                 // Cleanup local files
                 cleanupFiles(mani, targetDir, "RaveBusinessLogic", "*.xml");
-                cleanupFiles(mani, targetDir, @"Symbology\esri", "*.lyr");
+                cleanupFiles(mani, targetDir, @"Symbology\arcpro", "*.lyr");
             }
 
             return results;

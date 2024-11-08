@@ -12,6 +12,15 @@ namespace ArcProViewer.Buttons
         {
             try
             {
+                string folder = System.IO.Path.Combine(Environment.GetEnvironmentVariable("APPDATA"), Properties.Resources.AppDataFolder);
+                if (!Directory.Exists(folder))
+                {
+                    MessageBox.Show("There are no Riverscapes Viewer resources on this computer. Riverscapes Viewer requires symbology and business logic resources before projects can be opened." +
+                        " Use the 'Update Resources' button on the Riverscapes Viewer Toolbar to download the latest resources and then try to open a project again.", "No Resources Found",
+                        System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
+                    return;
+                }
+
                 OpenFileDialog f = new OpenFileDialog();
                 f.DefaultExt = "xml";
                 f.Filter = "Riverscapes Project Files (*.rs.xml)|*.rs.xml";

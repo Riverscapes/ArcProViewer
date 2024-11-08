@@ -29,6 +29,36 @@ namespace ArcProViewer
 
             await QueuedTask.Run(async () =>
             {
+                // Check if there is an active map view
+                if (MapView.Active == null)
+                {
+                    // Check if there are any maps in the project
+                    var mapProjectItems = Project.Current.GetItems<MapProjectItem>();
+                    Map map = null;
+
+                    if (mapProjectItems.Count() == 0)
+                    {
+                        // No maps exist, so create a new map
+                        map = MapFactory.Instance.CreateMap("NewMap", MapType.Map, MapViewingMode.Map);
+                    }
+                    else
+                    {
+                        // Use the first available map
+                        map = mapProjectItems.FirstOrDefault()?.GetMap();
+                    }
+
+                    // Open the map in a new map view
+                    if (map != null)
+                    {
+                        await ProApp.Panes.CreateMapPaneAsync(map);
+                    }
+                }
+
+
+                // At this point, there should be at least one map, so you can proceed to add layers
+                Map activeMap = MapView.Active?.Map ?? Project.Current.GetItems<MapProjectItem>().FirstOrDefault()?.GetMap();
+
+
                 // Attempt to find existing layer and exit if its present
                 if (!string.IsNullOrEmpty(item.MapLayerUri))
                 {

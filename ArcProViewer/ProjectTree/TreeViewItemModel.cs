@@ -44,7 +44,7 @@ namespace ArcProViewer.ProjectTree
 
             if (item is GroupLayer)
             {
-                newItem.IsExpanded = !((GroupLayer)item).Expanded;
+                newItem.IsExpanded = ((GroupLayer)item).Expanded;
             }
 
             Children.Add(newItem);

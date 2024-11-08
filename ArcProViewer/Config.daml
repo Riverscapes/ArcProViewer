@@ -20,14 +20,14 @@
 	<insertModule id="ArcProViewer_Module" className="Module1" autoLoad="false" caption="Riverscapes Viewer">
 	  <!-- uncomment to have the control hosted on a separate tab-->
 	  <tabs>
-		<!--<tab id="ArcProViewer_Tab1" caption="New Tab">
-          <group refID="ArcProViewer_Group1"/>
-        </tab>-->
+		<tab id="RiverscapesViewerTab" caption="Riverscapes" keytip="R">
+          <group refID="RiverscapesViewerGroup"/>
+        </tab>
 	  </tabs>
 	  <groups>
 		<!-- comment this out if you have no controls on the Addin tab to avoid
               an empty group-->
-		<group id="ArcProViewer_Group1" caption="Riverscapes Viewer" appearsOnAddInTab="true"
+		<group id="RiverscapesViewerGroup" caption="Riverscapes Viewer" appearsOnAddInTab="false"
 			   keytip="V">
 		  <!-- host controls within groups -->
 		  <button refID="RiverscapesViewer_Buttons_ProjectExplorerDockpane" size="large" />

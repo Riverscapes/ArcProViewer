@@ -11,6 +11,7 @@ using ArcGIS.Desktop.Framework.Threading.Tasks;
 using System.Threading.Tasks;
 using ArcGIS.Core.CIM;
 using System.Windows.Controls;
+using System.Xml.Linq;
 
 namespace ArcProViewer
 {
@@ -93,16 +94,26 @@ namespace ArcProViewer
                     }
 
                     // If this is the basemap group then find the count of project nodes
-                    // and ensure that we insert this basement below any Riverscapes projects.
+                    // and ensure that we insert this base map group node below any Riverscapes projects.
                     // For now we just add it to the bottom of the map ToC (even though this
                     // means that it will be below any ESRI added basemaps
+                    int groupIndex = 0;
                     if (groupItem.Item is BasemapGroup)
                     {
-                        index = MapView.Active.Map.Layers.Count;
+                        groupIndex = MapView.Active.Map.Layers.Count;
+                    }
+                    else
+                    {
+                        
+                        if (!(groupItem is ProjectTree.RaveProject) && groupItem.Parent != null)
+                        {
+                            // This is a group node somewhere in project hierarchy. Get its positional index
+                            groupIndex = groupItem.Parent.Children.IndexOf(groupItem);
+                        }
                     }
 
                     // If got to here then the group layer doesn't exist
-                    parent = LayerFactory.Instance.CreateGroupLayer(parent, index, groupItem.Name);
+                    parent = LayerFactory.Instance.CreateGroupLayer(parent, groupIndex, groupItem.Name);
                     groupItem.MapLayerUri = ((ArcGIS.Desktop.Mapping.GroupLayer)parent).URI;
 
                     // DO NOT ATTEMPT TO EXPAND GROUP LAYERS HERE.

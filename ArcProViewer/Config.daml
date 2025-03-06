@@ -65,7 +65,7 @@
 		  </tooltip>
 		</button>
 		<button id="RiverscapesViewer_Buttons_ProjectExplorerDockpane"
-				caption="Project Explorer" className="ArcProViewer.Buttons.UpdateResourcesButton"
+				caption="Project Explorer" className="ArcProViewer.Buttons.ProjectExplorerButton"
 				loadOnClick="true" smallImage="Images/viewer16.png"
 				largeImage="Images/viewer32.png"
 				keytip="E">

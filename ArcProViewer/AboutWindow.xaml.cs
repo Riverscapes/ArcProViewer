@@ -34,6 +34,7 @@ namespace ArcProViewer
 
             SetHyperlink(lnkChangeLog, Properties.Resources.ChangeLog);
             SetHyperlink(lnkWebsite, Properties.Resources.HelpUrl);
+            SetHyperlink(lnkAcknlowledgements, Properties.Resources.AcknowledgementsURL);
         }
 
         private void ChangeLog_RequestNavigate(object sender, RequestNavigateEventArgs e)

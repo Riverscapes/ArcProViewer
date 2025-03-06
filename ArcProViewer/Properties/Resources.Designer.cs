@@ -61,6 +61,15 @@ namespace ArcProViewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to https://viewer.riverscapes.net/about/acknowledgements/.
+        /// </summary>
+        internal static string AcknowledgementsURL {
+            get {
+                return ResourceManager.GetString("AcknowledgementsURL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to RiverscapesViewer.
         /// </summary>
         internal static string AppDataFolder {

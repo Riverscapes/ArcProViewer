@@ -6,8 +6,7 @@
     xmlns:local="clr-namespace:ArcProViewer"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="About Riverscapes Viewer"
-    Width="800"
-    Height="450"
+   SizeToContent="WidthAndHeight"
     ResizeMode="NoResize"
     mc:Ignorable="d">
     <Window.Resources>
@@ -25,8 +24,8 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <StackPanel
@@ -54,7 +53,7 @@
             Margin="0,0,0,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
-                <ColumnDefinition Width="70" />
+                <ColumnDefinition  />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
@@ -62,8 +61,8 @@
                 <RowDefinition />
                 <RowDefinition />
                 <RowDefinition />
+                <RowDefinition />
             </Grid.RowDefinitions>
-
             <TextBlock
                 Grid.Row="0"
                 Grid.Column="1"
@@ -84,7 +83,6 @@
             <TextBlock Grid.Row="1" Grid.Column="2">
                 <Hyperlink x:Name="lnkWebsite" RequestNavigate="WebSite_RequestNavigate">https://yourwebsite.com</Hyperlink>
             </TextBlock>
-
             <TextBlock
                 Grid.Row="2"
                 Grid.Column="1"
@@ -94,19 +92,16 @@
             <TextBlock Grid.Row="2" Grid.Column="2">
                 <Hyperlink x:Name="lnkChangeLog" RequestNavigate="ChangeLog_RequestNavigate">https://yourwebsite.com/changelog</Hyperlink>
             </TextBlock>
+            <TextBlock
+     Grid.Row="3"
+     Grid.Column="1"
+     Style="{StaticResource LabelStyle}">
+     Acknowledgements
+            </TextBlock>
+            <TextBlock Grid.Row="3" Grid.Column="2">
+       <Hyperlink x:Name="lnkAcknlowledgements" RequestNavigate="ChangeLog_RequestNavigate">https://yourwebsite.com/changelog</Hyperlink>
+            </TextBlock>
         </Grid>
-
-        <TextBlock Grid.Row="2" Margin="0,0,0,10">
-            Acknowledgments
-        </TextBlock>
-        <TextBlock
-            x:Name="txtAcknowledgements"
-            Grid.Row="3"
-            Margin="0,0,0,20"
-            VerticalAlignment="Top">
-            ACKNOWLEDGEMENTS TEXT HERE
-        </TextBlock>
-
         <StackPanel
             Grid.Row="4"
             Margin="0,10,0,0"

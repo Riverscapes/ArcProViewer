@@ -1,5 +1,13 @@
 # Riverscapes Viewer for ArcPro
 
+## [1.0.5] 7 Mar 2025
+
+- Release only for ArcPro 3.3 and higher.
+- Fixed map ToC groups being out of order.
+- Fixed generation of multiple new maps when using "Empty Template".
+- Finished Acknowledgements Screen.
+- Fixed Project Explorer button triggering wrong action.
+
 ## [1.0.4a] 8 Nov 2024
 
 ### Added

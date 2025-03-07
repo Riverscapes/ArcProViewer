@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ArcGIS.Desktop.Internal.Catalog.PropertyPages.NetworkDataset;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -46,6 +47,12 @@ namespace ArcProViewer
         private void WebSite_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
             Process.Start(new ProcessStartInfo(Properties.Resources.HelpUrl) { UseShellExecute = true });
+            e.Handled = true;
+        }
+
+        private void Acknowledgements_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(Properties.Resources.AcknowledgementsURL) { UseShellExecute = true });
             e.Handled = true;
         }
 

@@ -99,7 +99,7 @@
      Acknowledgements
             </TextBlock>
             <TextBlock Grid.Row="3" Grid.Column="2">
-       <Hyperlink x:Name="lnkAcknlowledgements" RequestNavigate="ChangeLog_RequestNavigate">https://yourwebsite.com/changelog</Hyperlink>
+       <Hyperlink x:Name="lnkAcknlowledgements" RequestNavigate="Acknowledgements_RequestNavigate">https://yourwebsite.com/changelog</Hyperlink>
             </TextBlock>
         </Grid>
         <StackPanel

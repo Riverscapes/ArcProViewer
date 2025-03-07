@@ -28,7 +28,7 @@ namespace ArcProViewer
             if (index < 0)
                 throw new ArgumentOutOfRangeException(nameof(index), "Layer index must be greater than or equal to zero");
 
-            await QueuedTask.Run(async () =>
+            await QueuedTask.Run(() =>
             {
                 // Check if there is an active map view
                 if (MapView.Active == null)
@@ -37,21 +37,16 @@ namespace ArcProViewer
                     var mapProjectItems = Project.Current.GetItems<MapProjectItem>();
                     Map map = null;
 
-                    if (mapProjectItems.Count() == 0)
+                    if (!mapProjectItems.Any())
                     {
                         // No maps exist, so create a new map
                         map = MapFactory.Instance.CreateMap("NewMap", MapType.Map, MapViewingMode.Map);
+                        ProApp.Panes.CreateMapPaneAsync(map);
                     }
                     else
                     {
                         // Use the first available map
                         map = mapProjectItems.FirstOrDefault()?.GetMap();
-                    }
-
-                    // Open the map in a new map view
-                    if (map != null)
-                    {
-                        await ProApp.Panes.CreateMapPaneAsync(map);
                     }
                 }
 
@@ -79,13 +74,13 @@ namespace ArcProViewer
 
                 // Now try to find these groups, starting with the root, project entry
                 parentItems.Reverse();
-                ILayerContainerEdit parent = MapView.Active.Map;
+                ILayerContainerEdit parent = activeMap;
                 foreach (TreeViewItemModel groupItem in parentItems)
                 {
                     // Attempt to find the existing ToC group layer
                     if (!string.IsNullOrEmpty(groupItem.MapLayerUri))
                     {
-                        var parentLayer = MapView.Active.Map.FindLayer(groupItem.MapLayerUri);
+                        var parentLayer = activeMap.FindLayer(groupItem.MapLayerUri);
                         if (parentLayer != null)
                         {
                             parent = parentLayer as ILayerContainerEdit;
@@ -100,11 +95,11 @@ namespace ArcProViewer
                     int groupIndex = 0;
                     if (groupItem.Item is BasemapGroup)
                     {
-                        groupIndex = MapView.Active.Map.Layers.Count;
+                        groupIndex = activeMap.Layers.Count;
                     }
                     else
                     {
-                        
+
                         if (!(groupItem is ProjectTree.RaveProject) && groupItem.Parent != null)
                         {
                             // This is a group node somewhere in project hierarchy. Get its positional index
@@ -178,7 +173,7 @@ namespace ArcProViewer
                 {
                     if (!string.IsNullOrEmpty(parentItem.MapLayerUri))
                     {
-                        var parentLayer = MapView.Active.Map.FindLayer(parentItem.MapLayerUri);
+                        var parentLayer = activeMap.FindLayer(parentItem.MapLayerUri);
                         if (parentLayer is ArcGIS.Desktop.Mapping.GroupLayer)
                         {
                             var groupLayer = parentLayer as ArcGIS.Desktop.Mapping.GroupLayer;

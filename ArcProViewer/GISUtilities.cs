@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using ArcGIS.Core.CIM;
 using System.Windows.Controls;
 using System.Xml.Linq;
+using ArcGIS.Core.Geometry;
 
 namespace ArcProViewer
 {
@@ -30,6 +31,9 @@ namespace ArcProViewer
 
             await QueuedTask.Run(() =>
             {
+                // If we need to zoom to layer then set this variable to the layer and then zoom to it at the end
+                Layer zoomLayer = null;
+
                 // Check if there is an active map view
                 if (MapView.Active == null)
                 {
@@ -113,6 +117,10 @@ namespace ArcProViewer
 
                     // DO NOT ATTEMPT TO EXPAND GROUP LAYERS HERE.
                     // This was causing ghosting of groups in the Map ToC.
+
+                    // If this is the project and we just added it then save it as the zoom layer
+                    if (groupItem.Item is RaveProject)
+                        zoomLayer = parent as Layer;
                 }
 
                 Uri uri = null;
@@ -196,7 +204,49 @@ namespace ArcProViewer
 
                 if (layer == null)
                     throw new InvalidOperationException("Failed to create layer from the layer file.");
+
+                if (zoomLayer is Layer)
+                {
+                    var layerExtent = GetLayerExtent(layer);
+                    if (layerExtent != null)
+                    {
+                        //Map activeMap = MapView.Active?.Map ?? Project.Current.GetItems<MapProjectItem>().FirstOrDefault()?.GetMap();
+
+                        //Project.Current.GetItems<MapProjectItem>().FirstOrDefault().
+
+                        MapView view = MapView.Active;
+                        view?.ZoomToAsync(layerExtent);
+                    }
+                }
             });
+        }
+
+        private static Envelope GetLayerExtent(Layer layer)
+        {
+            if (layer is FeatureLayer featureLayer)
+            {
+                return featureLayer.QueryExtent();
+            }
+            else if (layer is RasterLayer rasterLayer)
+            {
+                return rasterLayer.GetRaster().GetExtent();
+            }
+            else if (layer is ArcGIS.Desktop.Mapping.GroupLayer groupLayer)
+            {
+                Envelope combinedExtent = null;
+                foreach (var subLayer in groupLayer.Layers)
+                {
+                    var subLayerExtent = GetLayerExtent(subLayer);
+                    if (subLayerExtent != null)
+                    {
+                        combinedExtent = combinedExtent == null ? subLayerExtent : combinedExtent.Union(subLayerExtent);
+                    }
+                }
+
+                return combinedExtent;
+            }
+
+            return null;
         }
 
 

@@ -62,7 +62,7 @@ namespace ArcProViewer
                 // Attempt to find existing layer and exit if its present
                 if (!string.IsNullOrEmpty(item.MapLayerUri))
                 {
-                    Layer existingLayer = MapView.Active.Map.FindLayer(item.MapLayerUri);
+                    Layer existingLayer = MapView.Active?.Map.FindLayer(item.MapLayerUri);
                     if (existingLayer != null)
                         return;
                 }
@@ -145,6 +145,20 @@ namespace ArcProViewer
                 index = GetInsertIndex(item);
                 Layer layer = LayerFactory.Instance.CreateLayer(uri, parent as ILayerContainerEdit, index, item.Name);
                 item.MapLayer = layer;
+
+
+                // Force evaluation of the extent
+                if (layer is FeatureLayer featurelayer)
+                {
+                    featurelayer.ClearSelection();
+                    featurelayer.ClearDisplayCache();
+                    featurelayer.SetDefinitionQuery("");
+                    Envelope extent = featurelayer.QueryExtent();
+                }
+                else if (layer is RasterLayer rasterLayer)
+                {
+                    Envelope extent = rasterLayer.GetRaster().GetExtent();
+                }
 
                 // Apply symbology
                 FileInfo symbologyLayerFilePath = GetSymbologyFile(item.Item as GISDataset);

@@ -106,14 +106,20 @@ namespace ArcProViewer
 
                         if (!(groupItem is ProjectTree.RaveProject) && groupItem.Parent != null)
                         {
+                            //MapView.Active.Map.GetLayersAsFlattenedList();
+                            int insert_index = GetInsertIndex(groupItem);
+                            groupIndex = Math.Min(parent.Layers.Count, insert_index);
+
+                            //groupIndex = Math.Min(groupItem.Parent.Children.IndexOf(groupItem), parent.Layers.Count);
                             // This is a group node somewhere in project hierarchy. Get its positional index
-                            groupIndex = groupItem.Parent.Children.IndexOf(groupItem);
+                            //groupIndex = groupItem.Parent.Children.IndexOf(groupItem);
                         }
                     }
 
                     // If got to here then the group layer doesn't exist
                     parent = LayerFactory.Instance.CreateGroupLayer(parent, groupIndex, groupItem.Name);
                     groupItem.MapLayerUri = ((ArcGIS.Desktop.Mapping.GroupLayer)parent).URI;
+                    groupItem.MapLayer = parent;
 
                     // DO NOT ATTEMPT TO EXPAND GROUP LAYERS HERE.
                     // This was causing ghosting of groups in the Map ToC.
@@ -136,7 +142,9 @@ namespace ArcProViewer
                 }
 
                 System.Diagnostics.Debug.Print("Creating layer {0} with parent {1}. Uri: {2}", item.Name, parent, uri?.ToString());
+                index = GetInsertIndex(item);
                 Layer layer = LayerFactory.Instance.CreateLayer(uri, parent as ILayerContainerEdit, index, item.Name);
+                item.MapLayer = layer;
 
                 // Apply symbology
                 FileInfo symbologyLayerFilePath = GetSymbologyFile(item.Item as GISDataset);
@@ -219,6 +227,29 @@ namespace ArcProViewer
                     }
                 }
             });
+        }
+
+        private int GetInsertIndex(TreeViewItemModel newItem)
+        {
+            // This is the position of the item in the Business Logic Tree
+            //int business_logic_index = newItem.Parent.Children.IndexOf(newItem);
+
+            var map_layers = MapView.Active?.Map.GetLayersAsFlattenedList();
+
+            int insert_index = 0;
+            foreach (TreeViewItemModel child in newItem.Parent.Children)
+            {
+                if (child == newItem)
+                    return insert_index;
+
+                if (child.MapLayer is Layer && map_layers != null)
+                {
+                    if (map_layers.Contains(child.MapLayer))
+                        insert_index++;
+                }
+            }
+
+            return insert_index;
         }
 
         private static Envelope GetLayerExtent(Layer layer)

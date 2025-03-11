@@ -25,6 +25,11 @@ namespace ArcProViewer.ProjectTree
 
         public bool IsExpanded { get; set; }
 
+        // This keeps a reference to the ESRI map layer object when the item is
+        // added to the tree. This is used to help detect the order that items
+        // should go in the Map ToC.
+        public object MapLayer { get; set; }
+
         public TreeViewItemModel(ITreeItem item, TreeViewItemModel parent)
         {
             Item = item;

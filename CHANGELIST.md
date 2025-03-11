@@ -1,5 +1,15 @@
 # Riverscapes Viewer for ArcPro
 
+## Known issues
+
+- If you drag layers or group layers out of order, or indeed out of the parent project group layer then continue to more layers to the map, you will layers added to the map in unexpected order.
+- The NHDPlus.gpkg in Riverscapes Context has an unknown problem that prevents ArcGIS Pro from correctly detecting the layer extents and zooming to the project.
+
+## [1.0.6] 11 Mar 2025
+
+- Further improvements to layer order when adding items to the map.
+- Now attempts to zoom to project when adding first layer to the map.
+
 ## [1.0.5] 7 Mar 2025
 
 - Release only for ArcPro 3.3 and higher.

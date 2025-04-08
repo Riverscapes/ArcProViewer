@@ -3,7 +3,10 @@
 ## Known issues
 
 - If you drag layers or group layers out of order, or indeed out of the parent project group layer then continue to more layers to the map, you will layers added to the map in unexpected order.
-- The NHDPlus.gpkg in Riverscapes Context has an unknown problem that prevents ArcGIS Pro from correctly detecting the layer extents and zooming to the project.
+
+## [1.0.7] 7 Apr 2025
+
+- Adding GeoPackage layers using database connection. Fixes issue with layer extents not being detected correctly for GeoPackage layers.
 
 ## [1.0.6] 11 Mar 2025
 

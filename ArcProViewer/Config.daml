@@ -1,5 +1,5 @@
 ﻿<ArcGIS defaultAssembly="ArcProViewer.dll" defaultNamespace="ArcProViewer" xmlns="http://schemas.esri.com/DADF/Registry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.esri.com/DADF/Registry file:///C:/Program%20Files/ArcGIS/Pro/bin/ArcGIS.Desktop.Framework.xsd">
-  <AddInInfo id="{62c2dba2-edf8-4538-ab58-3a1f3934f0b3}" version="1.0.6" desktopVersion="3.3" product="ArcGISPro">
+  <AddInInfo id="{62c2dba2-edf8-4538-ab58-3a1f3934f0b3}" version="1.0.7" desktopVersion="3.3" product="ArcGISPro">
 	<Name>Riverscapes ArcPro Viewer</Name>
 	<Description>
 	  Riverscapes Viewers make it easy to explore riverscape projects as maps.

@@ -15,6 +15,8 @@ using System.Xml.Linq;
 using ArcGIS.Core.Geometry;
 using System.Collections;
 using ArcGIS.Desktop.Layouts;
+using ArcGIS.Core.Data.UtilityNetwork.Trace;
+using System.Windows;
 
 namespace ArcProViewer
 {
@@ -132,7 +134,7 @@ namespace ArcProViewer
                    }
 
                    Layer layer = null;
-                   if (item.Item is ProjectTree.Vector && (item.Item as Vector).WorkspaceType == FileSystemDataset.GISDataStorageTypes.GeoPackage)
+                   if (item.Item is ProjectTree.Vector && (item.Item as ProjectTree.Vector).WorkspaceType == FileSystemDataset.GISDataStorageTypes.GeoPackage)
                    {
                        CIMStandardDataConnection conn = new CIMStandardDataConnection();
                        conn.WorkspaceConnectionString = string.Format("DATABASE={0}", (item.Item as GISDataset).WorkspacePath);
@@ -210,7 +212,7 @@ namespace ArcProViewer
                    item.MapLayerUri = layer.URI;
 
                    // Apply feature filter
-                   if (item.Item is Vector vector && layer is FeatureLayer featureLayer)
+                   if (item.Item is ProjectTree.Vector vector && layer is FeatureLayer featureLayer)
                    {
                        if (!string.IsNullOrEmpty(vector.DefinitionQuery))
                            featureLayer.SetDefinitionQuery(vector.DefinitionQuery);
@@ -346,6 +348,7 @@ namespace ArcProViewer
 
             foreach (string folder in SearchFolders)
             {
+                MessageBox.Show(folder, "Symbology Search Folder", MessageBoxButton.OK, MessageBoxImage.Information);
                 if (Directory.Exists(folder))
                 {
                     string path = Path.ChangeExtension(Path.Combine(folder, layer.SymbologyKey), "lyrx");

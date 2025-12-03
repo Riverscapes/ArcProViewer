@@ -172,7 +172,14 @@ namespace ArcProViewer
                    {
                        featurelayer.ClearSelection();
                        featurelayer.ClearDisplayCache();
-                       featurelayer.SetDefinitionQuery("");
+                       try
+                       {
+                           featurelayer.SetDefinitionQuery("");
+                       }
+                       catch
+                       {
+                           // Do Nothing
+                       }
                        Envelope extent = featurelayer.QueryExtent();
                        System.Diagnostics.Debug.Print("Envelope: XMin={0}, YMin={1}, XMax={2}, YMax={3}", extent.XMin, extent.YMin, extent.XMax, extent.YMax);
                    }
@@ -348,7 +355,7 @@ namespace ArcProViewer
 
             foreach (string folder in SearchFolders)
             {
-                MessageBox.Show(folder, "Symbology Search Folder", MessageBoxButton.OK, MessageBoxImage.Information);
+                //MessageBox.Show(folder, "Symbology Search Folder", MessageBoxButton.OK, MessageBoxImage.Information);
                 if (Directory.Exists(folder))
                 {
                     string path = Path.ChangeExtension(Path.Combine(folder, layer.SymbologyKey), "lyrx");

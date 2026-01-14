@@ -49,7 +49,7 @@ namespace ArcProViewer
                        {
                            // No maps exist, so create a new map
                            map = MapFactory.Instance.CreateMap("NewMap", MapType.Map, MapViewingMode.Map);
-                           ProApp.Panes.CreateMapPaneAsync(map);
+                           await ProApp.Panes.CreateMapPaneAsync(map);
                        }
                        else
                        {

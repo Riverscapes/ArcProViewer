@@ -4,6 +4,12 @@
 
 - If you drag layers or group layers out of order, or indeed out of the parent project group layer then continue to more layers to the map, you will layers added to the map in unexpected order.
 
+## [1.0.11] 2 Jun 2026
+
+- Fixes bug where the project explorer button on the Riverscapes Viewer toolbar does nothing and simply greys out after clicking.
+- Add new Data Exchange button on the Riverscapes Viewer toolbar.
+
+
 ## [1.0.7] 7 Apr 2025
 
 - Adding GeoPackage layers using database connection. Fixes issue with layer extents not being detected correctly for GeoPackage layers.

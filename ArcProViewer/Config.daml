@@ -33,6 +33,7 @@
 		  <button refID="RiverscapesViewer_Buttons_ProjectExplorerDockpane" size="large" />
 		  <button refID="RiverscapesViewer_Buttons_OpenProject" size="large" />
 		  <button refID="RiverscapesViewer_Buttons_CloseProject" size="large" />
+		  <button refID="RiverscapesViewer_Buttons_DataExchange" size="large"/>
 		  <button refID="RiverscapesViewer_Buttons_Help" size="small" />
 		  <button refID="RiverscapesViewer_Buttons_UpdateResources" size="small" />
 		  <button refID="RiverscapesViewer_Buttons_FindResourcesFolder" size="small" />
@@ -62,6 +63,17 @@
 				keytip="C">
 		  <tooltip heading="Close Project">
 			Close all open projects<disabledText />
+		  </tooltip>
+		</button>
+		<button id="RiverscapesViewer_Buttons_DataExchange"
+				caption="Data Exchange"
+				className="ArcProViewer.Buttons.DataExchangeButton"
+				loadOnClick="true"
+				smallImage="Images/data-exchange_16.png"
+				largeImage="Images/data-exchange_32.png"
+				keytip="D">
+		  <tooltip heading="Tooltip Heading">
+			Launch the Riverscapes Viewer Data Exchange Tool to convert between different formats of riverscape project files.<disabledText />
 		  </tooltip>
 		</button>
 		<button id="RiverscapesViewer_Buttons_ProjectExplorerDockpane"

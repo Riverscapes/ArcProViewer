@@ -223,21 +223,13 @@
             Name="Riverscapes"
             Grid.Row="0"
             KeyboardNavigation.TabNavigation="Local"
-            LastChildFill="true"
-            
+            LastChildFill="true"      
             >
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <TextBlock Style="{DynamicResource Esri_TextBlockDockPaneHeader}" Text="{Binding Heading}">
-                    <TextBlock.ToolTip>
-                        <WrapPanel MaxWidth="300" Orientation="Vertical">
-                            <TextBlock Text="{Binding Heading}" TextWrapping="Wrap" />
-                        </WrapPanel>
-                    </TextBlock.ToolTip>
-                </TextBlock>
+              
                 <TreeView
                     x:Name="treProject"
                     Grid.Row="1"

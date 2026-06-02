@@ -4,7 +4,7 @@ using ArcGIS.Desktop.Framework.Contracts;
 
 namespace ArcProViewer.Buttons
 {
-    internal class ProjectExporerButton : Button
+    internal class ProjectExplorerButton : Button
     {
         protected override void OnClick()
         {

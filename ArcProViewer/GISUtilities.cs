@@ -203,11 +203,25 @@ namespace ArcProViewer
                                var colorizer = ((CIMRasterLayer)cimLyrDoc.LayerDefinitions[0]).Colorizer as CIMRasterColorizer;
                                ((RasterLayer)layer).SetColorizer(colorizer);
                            }
-                           else
-                           {
-                               var rendererFromLayerFile = ((CIMFeatureLayer)cimLyrDoc.LayerDefinitions[0]).Renderer;
-                               ((FeatureLayer)layer).SetRenderer(rendererFromLayerFile);
-                           }
+                            else
+                            {
+                                var sourceFeatureLayer = cimLyrDoc.LayerDefinitions[0] as CIMFeatureLayer;
+                                var targetFeatureLayer = layer as FeatureLayer;
+
+                                if (sourceFeatureLayer?.Renderer != null)
+                                    targetFeatureLayer?.SetRenderer(sourceFeatureLayer.Renderer);
+
+                                if (sourceFeatureLayer != null && targetFeatureLayer != null)
+                                {
+                                    var targetDefinition = targetFeatureLayer.GetDefinition() as CIMFeatureLayer;
+                                    if (targetDefinition != null)
+                                    {
+                                        targetDefinition.LabelClasses = sourceFeatureLayer.LabelClasses;
+                                        targetDefinition.LabelVisibility = sourceFeatureLayer.LabelVisibility;
+                                        targetFeatureLayer.SetDefinition(targetDefinition);
+                                    }
+                                }
+                            }
                        }
                        catch (Exception ex)
                        {

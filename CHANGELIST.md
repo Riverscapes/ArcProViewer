@@ -4,6 +4,10 @@
 
 - If you drag layers or group layers out of order, or indeed out of the parent project group layer then continue to more layers to the map, you will layers added to the map in unexpected order.
 
+## [1.0.12] 3 Jul 2026
+
+- Labels now working when they are defined in symbology *.lyrx files.
+
 ## [1.0.11] 2 Jun 2026
 
 - Fixes bug where the project explorer button on the Riverscapes Viewer toolbar does nothing and simply greys out after clicking.
